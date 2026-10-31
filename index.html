@@ -9,6 +9,9 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link rel="icon" type="image/png" href="logo_pgri.png">
+	<link rel="manifest" href="./manifest.json">
+	<meta name="theme-color" content="#1f2937">
+	<link rel="apple-touch-icon" href="icon-192.png">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -2549,6 +2552,15 @@
                 document.body.style.overflow = "auto";
             }
         }
+    </script>
+	<script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registered', reg.scope))
+            .catch(err => console.error('Service Worker failed', err));
+        });
+      }
     </script>
 </body>
 </html>
