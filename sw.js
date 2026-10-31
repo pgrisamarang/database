@@ -1,6 +1,6 @@
 const CACHE_NAME = 'app-anggota-v1';
 const urlsToCache = [
-  './index_2.html',
+  './index.html',
   './manifest.json'
 ];
 
