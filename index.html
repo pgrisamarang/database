@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Database Anggota PGRI Cabang Samarang</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Menggunakan Google Font "Inter" untuk kesan yang formal, elegan, dan profesional */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            letter-spacing: -0.011em; /* Optimasi kerning halus khas aplikasi SaaS profesional */
+        }
+        .smooth-transition {
+            transition: hotel 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Custom Glowing LED Indicator for Active Filter Cards */
+        .active-glow {
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.15), 0 8px 10px -6px rgba(239, 68, 68, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-[#f8fafc] min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- LOGIN SCREEN WITH HERO SPLIT LAYOUT -->
+    <div id="login-container" class="flex-grow flex items-center justify-center p-4 md:p-8">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl border border-slate-100 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[580px] transition-all duration-300">
+            
+            <!-- SISI KIRI: PANEL KETUA & BRANDING PGRI (5 Kolom di Desktop dengan Foto Ketua Diperbesar) -->
+            <div class="md:col-span-5 bg-gradient-to-br from-red-700 via-red-800 to-slate-900 p-8 text-white flex flex-col justify-between relative overflow-hidden text-center md:text-left">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
+                
+                <!-- Header Logo di Panel Kiri -->
+                <div class="flex items-center justify-center md:justify-start gap-3 mb-6 md:mb-0 relative z-10">
+                    <div class="w-11 h-11 bg-white p-1.5 rounded-xl flex items-center justify-center shadow-md shrink-0">
+                        <img src="https://lh3.googleusercontent.com/d/1zNxI6_AaCnTciFkXLJnBj5TmTzwYsrcQ" 
+                             alt="Logo PGRI" 
+                             class="w-full h-full object-contain"
+                             onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=pgri'">
+                    </div>
+                    <div class="text-left">
+                        <span class="font-extrabold text-white block text-sm tracking-wider uppercase">PGRI SAMARANG BRANCH</span>
+                        <span class="text-[10px] text-red-200 block font-medium">Kecamatan Samarang, Kabupaten Garut</span>
+                    </div>
+                </div>
+
+                <!-- Foto Ketua & Tagline Transformasi Digital (Diperbesar secara Proporsional & Mengisi Ruang) -->
+                <div class="my-auto space-y-5 relative z-10 py-4 flex flex-col items-center md:items-start">
+                    <div class="relative w-64 h-64 md:w-full md:h-80 rounded-2xl overflow-hidden border-4 border-white/20 shadow-2xl bg-slate-850 group/photo smooth-transition">
+                        <img id="ketua-photo" 
+                             src="https://lh3.googleusercontent.com/d/1MkSv3R3WWZQtOSbHnYszXGtCX9d13i6d?auto=format&fit=crop&q=200&w=500" 
+                             alt="Ketua Cabang PGRI Samarang" 
+                             class="w-full h-full object-cover object-center scale-100 group-hover/photo:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=pgri'">
+                        <span class="absolute bottom-0 inset-x-0 bg-red-600/95 text-[10px] font-bold py-2 uppercase tracking-wider text-center block">Ketua Cabang PGRI Samarang</span>
+                    </div>
+
+                    <div class="space-y-1 w-full text-center md:text-left">
+                        <h3 class="font-extrabold text-base tracking-wide text-white">Arief Fauzi Mansur, S.Pd.</h3>
+                        <p class="text-xs text-red-200 font-medium">Ketua Cabang PGRI Kecamatan Samarang</p>
+                    </div>
+
+                    <div class="w-16 h-1 bg-red-400 rounded-full"></div>
+
+                    <div class="bg-black/15 p-4 rounded-xl border border-white/10 text-left w-full">
+                        <p class="text-xs italic text-red-50 leading-relaxed font-medium">
+                            "Transformasi Digital Guru Samarang: Bersatu, Berinovasi, dan Berbagi untuk Mewujudkan Ekosistem Pendidikan yang Cerdas, Kreatif, dan Berkemajuan di Era Modern."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-[10px] text-red-300 font-medium mt-6 md:mt-0 relative z-10">
+                    Sistem Database Anggota Ranting Terintegrasi v1.5
+                </div>
+            </div>
+
+            <!-- SISI KANAN: PORTAL LOGIN & PENGUMUMAN RESMI (7 Kolom di Desktop) -->
+            <div class="md:col-span-7 p-6 sm:p-10 flex flex-col justify-center space-y-6">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Portal Akses Ranting</h2>
+                    <p class="text-slate-500 text-sm mt-1">Silakan masuk menggunakan akun pengguna pada kolom yang tersedia.</p>
+                </div>
+
+                <!-- 📢 KOTAK PENGUMUMAN FORMAL DAN INFORMATIF SESUAI EYD 📢 -->
+                <div class="bg-amber-50/75 border border-amber-200 rounded-2xl p-4 text-xs text-slate-700 leading-relaxed space-y-2.5 shadow-sm">
+                    <div class="flex items-center gap-2 text-amber-800">
+                        <i class="fa-solid fa-bullhorn text-sm animate-bounce"></i>
+                        <span class="font-extrabold tracking-wide uppercase text-[10px]">Informasi & Instruksi Kerja Pengurus Ranting</span>
+                    </div>
+                    <p class="font-medium">
+                        Portal Akses Ranting ini berisi data anggota per Ranting yang sudah terdata pada basis data resmi KTA Digital PGRI. Tugas Bapak/Ibu pengurus Ranting adalah melakukan <strong class="text-slate-950 font-bold">proses cross-check data</strong> yang tersedia. Apabila terdapat data yang tertera tidak sesuai, silakan lakukan proses penyuntingan agar tersimpan dengan baik di sistem.
+                    </p>
+                    <p class="font-medium">
+                        Jika terdapat anggota di Ranting Anda yang belum terdaftar di portal ini, maka menjadi kewajiban bagi pengurus Ranting untuk mendorong anggota tersebut agar segera mendaftarkan diri secara mandiri melalui tautan resmi dengan senantiasa mematuhi AD/ART PGRI. Data ini sepenuhnya digunakan untuk memenuhi kebutuhan akurasi administrasi data di Ranting masing-masing.
+                    </p>
+                    <!-- Tombol Tautan Pintar -->
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <a href="https://ktadigitalpgri.org/masuk" target="_blank" class="bg-amber-550/15 hover:bg-amber-500 hover:text-white text-amber-905 font-bold px-3 py-1.5 rounded-lg smooth-transition inline-flex items-center gap-1 border border-amber-250/50 text-[10px]">
+                            <i class="fa-solid fa-globe"></i> Login KTA Digital PGRI
+                        </a>
+                        <a href="https://ktadigitalpgri.org/daftar" target="_blank" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg smooth-transition inline-flex items-center gap-1 shadow-sm shadow-red-100 text-[10px]">
+                            <i class="fa-solid fa-user-plus"></i> Daftar KTA Digital PGRI
+                        </a>
+                    </div>
+                </div>
+
+                <div id="login-error" class="hidden p-3.5 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm flex items-center gap-2.5">
+                    <i class="fa-solid fa-circle-exclamation text-base"></i>
+                    <span id="error-text">Username atau password salah!</span>
+                </div>
+
+                <!-- Formulir Login -->
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Username Akses</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <i class="fa-solid fa-user-gear"></i>
+                            </span>
+                            <input type="text" id="username" required
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 focus:bg-white transition-all text-sm font-medium"
+                                placeholder="Contoh: rantingpgri">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Password Akses</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <i class="fa-solid fa-key"></i>
+                            </span>
+                            <input type="password" id="password" required
+                                class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 focus:bg-white transition-all text-sm font-medium"
+                                placeholder="••••••••">
+                            <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-655">
+                                <i id="password-toggle-icon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-red-200 hover:shadow-none hover:translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2">
+                        <span>Masuk ke Dashboard</span>
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                    </button>
+                </form>
+
+                <!-- 🚨 UPDATE TAUTAN WHATSAPP HUBUNGI ADMIN CABANG DENGAN PESAN OTOMATIS PREMIUM 🚨 -->
+                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                    <span>Butuh bantuan akses?</span>
+                    <a href="https://wa.me/6289515392119?text=Halo%20Admin%20Cabang%20PGRI%20Samarang%2C%20saya%20pengurus%20ranting%20butuh%20bantuan%20mengenai%20akses%20ke%20dalam%20Portal%20Database." target="_blank" class="text-red-600 hover:underline flex items-center gap-1">
+                        <i class="fa-brands fa-whatsapp text-emerald-500"></i> Hubungi Admin Cabang
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD SCREEN (Hidden on Load) -->
+    <div id="dashboard-container" class="hidden flex-grow flex flex-col">
+        <!-- HEADER / NAVIGATION -->
+        <header class="bg-white/80 border-b border-slate-100 sticky top-0 z-50 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-14">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 bg-white p-1 rounded-lg flex items-center justify-center shadow-md shadow-red-100 shrink-0 border border-slate-100">
+                            <img src="https://lh3.googleusercontent.com/d/1zNxI6_AaCnTciFkXLJnBj5TmTzwYsrcQ" 
+                                 alt="Logo PGRI" 
+                                 class="w-full h-full object-contain"
+                                 onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=pgri'">
+                        </div>
+                        <div>
+                            <span class="font-extrabold text-slate-900 block leading-tight text-xs sm:text-sm tracking-wide">PGRI SAMARANG</span>
+                            <span class="text-[9px] text-slate-400 block font-semibold uppercase tracking-wider">Sistem Informasi Anggota</span>
+                        </div>
+                    </div>
+
+                    <!-- Profil Ringkas & Tombol Setting Profil -->
+                    <div class="flex items-center gap-3">
+                        <!-- Foto Avatar Mini Admin -->
+                        <div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200 shadow-sm shrink-0 bg-slate-100">
+                            <img id="header-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=samarang" alt="Avatar Admin" class="w-full h-full object-cover">
+                        </div>
+                        <div class="hidden md:block text-right">
+                            <p class="text-[10px] text-slate-400 font-medium">Selamat datang,</p>
+                            <p id="user-display-name" class="text-xs font-bold text-slate-800">Nama Admin</p>
+                        </div>
+                        <!-- Tombol Menu Pengaturan Profil -->
+                        <button onclick="openProfileModal()" class="text-slate-400 hover:text-slate-655 bg-slate-50 hover:bg-slate-100 p-2 rounded-lg smooth-transition" title="Ubah Profil & Password">
+                            <i class="fa-solid fa-user-gear text-sm"></i>
+                        </button>
+                        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+                        <button onclick="handleLogout()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg transition-all font-semibold border border-transparent hover:border-red-100">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="hidden sm:inline">Keluar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CONTENT -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-grow w-full space-y-5">
+            
+            <!-- PREMIUM WELCOME BANNER -->
+            <div class="bg-gradient-to-r from-red-700 via-rose-600 to-slate-900 rounded-2xl p-5 text-white shadow-md relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-60 h-60 bg-white/5 rounded-full blur-3xl transform translate-x-20 -translate-y-20"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <span id="badge-ranting" class="bg-white/20 text-white text-[9px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-widest mb-1 inline-block backdrop-blur-md">Ranting Hack</span>
+                        <h2 class="text-lg sm:text-xl font-extrabold tracking-tight">Selamat Datang kembali, <span id="welcome-name" class="text-yellow-300">Nama Admin</span>!</h2>
+                        <p class="text-red-100 text-xs max-w-3xl leading-relaxed">Kelola data resmi <b id="welcome-ranting" class="underline decoration-yellow-400 decoration-2">Ranting X</b>. Klik kartu statistik di bawah ini untuk filter instan.</p>
+                    </div>
+                    <!-- Foto Banner Besar Admin -->
+                    <div class="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white/20 shadow-xl bg-slate-855 shrink-0 hidden md:block">
+                        <img id="banner-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=samarang" alt="Foto Admin" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+
+            <!-- JALUR FILTER KHUSUS ADMIN CABANG -->
+            <div id="admin-branch-filter-container" class="hidden bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-red-50 text-red-655 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs text-slate-800">Panel Kontrol Cabang</h4>
+                        <p class="text-[10px] text-slate-400">Filter cepat cakupan Ranting se-Kecamatan</p>
+                    </div>
+                </div>
+                <div class="w-full sm:w-64">
+                    <select id="admin-ranting-selector" onchange="changeAdminRantingFilter()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="Semua Ranting">Semua Ranting (Se-Kecamatan)</option>
+                        <option value="Ranting Samarang">Ranting Samarang</option>
+                        <option value="Ranting Parakan">Ranting Parakan</option>
+                        <option value="Ranting Sukarasa">Ranting Sukarasa</option>
+                        <option value="Ranting Cintarakyat">Ranting Cintarakyat</option>
+                        <option value="Ranting SMPN 1 Samarang">Ranting SMPN 1 Samarang</option>
+                        <option value="Ranting SMPN 2 Samarang">Ranting SMPN 2 Samarang</option>
+                        <option value="Ranting SMP Muslimin">Ranting SMP Muslimin</option>
+                        <option value="Ranting TK">Ranting TK</option>
+                        <option value="Ranting SMA">Ranting SMA</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- REDESAIN ULTRA-PREMIUM: GLASSMORPHIC WIDGETS & STATS CONTROL PANEL -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-1.5 h-3.5 bg-red-600 rounded-full"></span>
+                        <h3 class="text-[11px] font-bold text-slate-455 uppercase tracking-widest">Panel Analisis Data Utama</h3>
+                    </div>
+                    <button id="btn-reset-filter" onclick="clearFilters()" class="hidden text-[11px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl transition-all flex items-center gap-1 border border-red-100 shadow-sm">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        <span>Atur Ulang Filter</span>
+                    </button>
+                </div>
+                
+                <!-- Grid Statistik Baru -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 max-w-6xl mx-auto">
+                    
+                    <!-- Card 1: Total Anggota -->
+                    <div id="card-total" onclick="setFilter('all')" class="smooth-transition bg-white p-4 rounded-2xl border-l-4 border-l-rose-500 border-y border-r border-slate-100 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md flex flex-col items-center justify-between text-center relative group min-h-[145px]">
+                        <!-- LED Active Status -->
+                        <div id="led-total" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500 animate-ping hidden"></div>
+                        <div class="text-rose-655 bg-rose-50 w-8 h-8 rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="my-1">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Total Anggota</span>
+                            <span id="stat-total" class="text-2xl font-extrabold text-slate-900 block mt-0.5 leading-none">0</span>
+                        </div>
+                        <!-- PIL FILTER GENDER -->
+                        <div class="flex gap-1 w-full justify-center mt-1">
+                            <button id="btn-gender-l" onclick="event.stopPropagation(); setFilter('gender_L');" class="smooth-transition text-[9px] font-extrabold bg-sky-50 text-sky-700 border border-sky-100/50 px-1.5 py-1 rounded-lg flex items-center gap-0.5 hover:bg-sky-500 hover:text-white cursor-pointer">
+                                <i class="fa-solid fa-mars text-[8px]"></i> L:<span id="stat-total-l">0</span>
+                            </button>
+                            <button id="btn-gender-p" onclick="event.stopPropagation(); setFilter('gender_P');" class="smooth-transition text-[9px] font-extrabold bg-pink-50 text-pink-700 border border-pink-100/50 px-1.5 py-1 rounded-lg flex items-center gap-0.5 hover:bg-pink-555 hover:text-white cursor-pointer">
+                                <i class="fa-solid fa-venus text-[8px]"></i> P:<span id="stat-total-p">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: PNS -->
+                    <div id="card-pns" onclick="setFilter('status_PNS')" class="smooth-transition bg-white p-4 rounded-2xl border-l-4 border-l-amber-500 border-y border-r border-slate-100 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md flex flex-col items-center justify-between text-center relative group min-h-[145px]">
+                        <div id="led-pns" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500 animate-ping hidden"></div>
+                        <div class="text-amber-600 bg-amber-50 w-8 h-8 rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="my-1.5">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Aparatur PNS</span>
+                            <span id="stat-pns" class="text-2xl font-extrabold text-slate-900 block mt-0.5 leading-none">0</span>
+                        </div>
+                        <span class="text-[8px] text-amber-700 font-extrabold bg-amber-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Negeri</span>
+                    </div>
+
+                    <!-- Card 3: PPPK -->
+                    <div id="card-pppk" onclick="setFilter('status_PPPK')" class="smooth-transition bg-white p-4 rounded-2xl border-l-4 border-l-blue-500 border-y border-r border-slate-100 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md flex flex-col items-center justify-between text-center group min-h-[145px]">
+                        <div id="led-pppk" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500 animate-ping hidden"></div>
+                        <div class="text-blue-600 bg-blue-50 w-8 h-8 rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div class="my-1.5">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Pegawai PPPK</span>
+                            <span id="stat-pppk" class="text-2xl font-extrabold text-slate-900 block mt-0.5 leading-none">0</span>
+                        </div>
+                        <span class="text-[8px] text-blue-700 font-extrabold bg-blue-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Penuh Waktu</span>
+                    </div>
+
+                    <!-- Card 4: PPPK Paruh Waktu -->
+                    <div id="card-pppk-pw" onclick="setFilter('status_PPPK Paruh Waktu')" class="smooth-transition bg-white p-4 rounded-2xl border-l-4 border-l-indigo-500 border-y border-r border-slate-100 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md flex flex-col items-center justify-between text-center group min-h-[145px]">
+                        <div id="led-pppk-pw" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500 animate-ping hidden"></div>
+                        <div class="text-indigo-650 bg-indigo-50 w-8 h-8 rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-user-clock"></i>
+                        </div>
+                        <div class="my-1.5">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">PPPK PW</span>
+                            <span id="stat-pppk-pw" class="text-2xl font-extrabold text-slate-900 block mt-0.5 leading-none">0</span>
+                        </div>
+                        <span class="text-[8px] text-indigo-700 font-extrabold bg-indigo-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Paruh Waktu</span>
+                    </div>
+
+                    <!-- Card 5: Honorer/GTY/GTT -->
+                    <div id="card-honorer" onclick="setFilter('status_Honorer/GTY/GTT')" class="smooth-transition bg-white p-4 rounded-2xl border-l-4 border-l-slate-550 border-y border-r border-slate-100 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md flex flex-col items-center justify-between text-center relative group min-h-[145px]">
+                        <div id="led-honorer" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-slate-550 animate-ping hidden"></div>
+                        <div class="text-slate-600 bg-slate-50 w-8 h-8 rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="my-1.5">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Honorer/GTY/GTT</span>
+                            <span id="stat-honorer" class="text-2xl font-extrabold text-slate-900 block mt-0.5 leading-none">0</span>
+                        </div>
+                        <span class="text-[8px] text-slate-700 font-extrabold bg-slate-50 px-2 py-0.5 rounded-md uppercase tracking-wider">GTT / Yayasan</span>
+                    </div>
+
+                    <!-- Card 6: Pensiunan -->
+                    <div id="card-pensiun" onclick="setFilter('status_Pensiunan')" class="smooth-transition bg-white p-4 rounded-2xl border-l-4 border-l-emerald-500 border-y border-r border-slate-100 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md flex flex-col items-center justify-between text-center relative group min-h-[145px]">
+                        <div id="led-pensiun" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-500 animate-ping hidden"></div>
+                        <div class="text-emerald-600 bg-emerald-50 w-8 h-8 rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div class="my-1.5">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Pensiunan</span>
+                            <span id="stat-pensiun" class="text-2xl font-extrabold text-slate-900 block mt-0.5 leading-none">0</span>
+                        </div>
+                        <span class="text-[8px] text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Purna Bakti</span>
+                    </div>
+
+                    <!-- Card 7: Sertifikasi -->
+                    <div id="card-sertifikasi" onclick="setFilter('sertifikasi_Sudah')" class="smooth-transition bg-white p-4 rounded-2xl border-l-4 border-l-teal-500 border-y border-r border-slate-100 shadow-sm cursor-pointer hover:-translate-y-1 hover:shadow-md flex flex-col items-center justify-between text-center relative group min-h-[145px]">
+                        <div id="led-sertifikasi" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-teal-500 animate-ping hidden"></div>
+                        <div class="text-teal-655 bg-teal-50 w-8 h-8 rounded-full flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <div class="my-1.5">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Sertifikasi</span>
+                            <span id="stat-sertifikasi" class="text-2xl font-extrabold text-teal-655 block mt-0.5 leading-none">0</span>
+                        </div>
+                        <span class="text-[8px] text-teal-700 font-extrabold bg-teal-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Lulus Serdik</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🚨 DYNAMIC RETIREMENT NOTIFICATION PANEL -->
+            <div id="retirement-panel" class="hidden bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-5 shadow-sm space-y-3 smooth-transition">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base shadow-sm">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 tracking-tight text-sm">📢 Monitor Masa Purna Bakti (Pensiun &lt; 1 Tahun Berjalan)</h4>
+                            <p class="text-[10px] text-slate-500">Anggota Ranting aktif yang akan memasuki batas usia pensiun guru (60 tahun) dalam waktu dekat.</p>
+                        </div>
+                    </div>
+                    <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider" id="retirement-badge-count">0 Anggota</span>
+                </div>
+                
+                <!-- Row List Guru Pensiun -->
+                <div id="retirement-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1.5">
+                    <!-- Dynamic cards inject here -->
+                </div>
+            </div>
+
+            <!-- GRAPHICS / INFOGRAPHICS SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <!-- Grafik Status Pegawai -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm col-span-1 lg:col-span-2 space-y-3 relative">
+                    <div class="absolute top-4 right-5 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span>
+                        <span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span>
+                        <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-1 h-3.5 bg-amber-500 rounded-full"></span>
+                        <h3 class="font-bold text-slate-850 text-xs sm:text-sm">Grafik Distribusi Status Pegawai</h3>
+                    </div>
+                    <div class="relative h-52 pt-1">
+                        <canvas id="chartKepegawaian"></canvas>
+                    </div>
+                </div>
+
+                <!-- Grafik Komposini Gender -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3 relative">
+                    <div class="absolute top-4 right-5 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span>
+                        <span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span>
+                        <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-1 h-3.5 bg-sky-500 rounded-full"></span>
+                        <h3 class="font-bold text-slate-850 text-xs sm:text-sm">Rasio Gender</h3>
+                    </div>
+                    <div class="relative h-52 flex items-center justify-center pt-1">
+                        <canvas id="chartGender"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATA TABLE -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden space-y-3">
+                <!-- Table Header & Filters -->
+                <div class="p-5 pb-1 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <h3 class="font-extrabold text-slate-800 text-base tracking-tight">Daftar Anggota PGRI</h3>
+                            <span id="active-filter-badge" class="hidden text-[9px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-md uppercase tracking-wider"></span>
+                            <!-- ☁️ CLOUD SYNC STATUS LAMP INDICATOR -->
+                            <span id="cloud-sync-status" class="text-[10px] font-semibold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>
+                                <span>Mengecek Cloud...</span>
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Daftar guru terverifikasi pada Ranting terpilih. Klik <i class="fa-solid fa-circle-info mx-0.5 text-red-500"></i> pada mobile untuk data lengkap.</p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <!-- Search -->
+                        <div class="relative flex-grow">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                            </span>
+                            <input type="text" id="table-search" oninput="filterTable()"
+                                class="w-full sm:w-48 pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white text-xs"
+                                placeholder="Cari Nama / NPA / Unit...">
+                        </div>
+
+                        <!-- CRUD: Tombol Tambah Anggota -->
+                        <button onclick="openAddModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs px-3.5 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>Tambah Anggota</span>
+                        </button>
+
+                        <!-- Export Button -->
+                        <button onclick="exportDataExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-3.5 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                            <i class="fa-solid fa-file-excel text-xs"></i>
+                            <span>Ekspor Excel</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table Content -->
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse min-w-[900px] md:min-w-full">
+                        <thead>
+                            <tr class="bg-slate-50/50 text-slate-500 text-[9px] font-bold uppercase tracking-widest border-b border-slate-100">
+                                <th class="py-3 px-4 w-12 text-center border-r border-slate-100/50">No</th>
+                                <th class="py-3 px-4 w-32">NPA</th>
+                                <th class="py-3 px-4">Nama Lengkap</th>
+                                <th class="py-3 px-4 hidden md:table-cell">Tempat Tanggal Lahir</th>
+                                <th class="py-3 px-4">Unit Kerja / Sekolah</th>
+                                <th class="py-3 px-4 hidden lg:table-cell">Pendidikan</th>
+                                <th class="py-3 px-4">Status Pegawai</th>
+                                <th class="py-3 px-4 hidden md:table-cell">Jenis Kelamin</th>
+                                <th class="py-3 px-4">Keaktifan</th>
+                                <th class="py-3 px-4 w-24 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="member-table-body" class="divide-y divide-slate-100 text-xs">
+                            <!-- Rows will be injected here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="table-empty-state" class="hidden p-12 text-center">
+                    <div class="text-slate-300 text-5xl mb-3">
+                        <i class="fa-regular fa-folder-open"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-700">Data tidak ditemukan</h4>
+                    <p class="text-xs text-slate-400 mt-0.5 max-w-sm mx-auto">Anggota dengan kriteria ini tidak tersedia.</p>
+                </div>
+
+                <!-- Table Footer -->
+                <div class="p-3.5 bg-slate-50/50 border-t border-slate-100 text-[11px] text-slate-400 flex flex-col sm:flex-row justify-between items-center gap-1.5">
+                    <div>Menampilkan <span id="table-showing" class="font-bold text-slate-700">0</span> dari <span id="table-total" class="font-bold text-slate-700">0</span> anggota.</div>
+                    <div class="font-semibold">PGRI Cabang Samarang</div>
+                </div>
+            </div>
+
+            <!-- INFORMASI CATATAN KAKI -->
+            <div class="bg-[#fef2f2] border border-[#fee2e2] rounded-2xl p-4 flex items-start sm:items-center gap-3.5 text-slate-700 text-xs smooth-transition hover:border-red-200 shadow-sm">
+                <div class="w-9 h-9 rounded-xl bg-red-100 text-red-700 flex items-center justify-center text-sm shrink-0 shadow-inner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="flex-grow">
+                    <h4 class="font-bold text-slate-900 tracking-tight text-xs sm:text-sm">Verifikasi & Penyelarasan Data</h4>
+                    <p class="text-slate-500 mt-0.5 text-[11px] sm:text-xs">Jika terdapat ketidaksesuaian pada data di atas, silakan edit dan jangan lupa simpan. Atau bisa hubungi tim administrator <span class="font-bold text-red-700">Cabang Kecamatan</span> untuk proses pemutakhiran data secara terpusat.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL SETTING PROFIL ADMIN (UPGRADED: UBAH PROFIL, PASSWORD, KAMERA/FOTO PERMANEN) -->
+    <div id="profile-settings-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-100 transform transition-all">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-5 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-base"><i class="fa-solid fa-user-gear mr-1.5"></i>Pengaturan Profil Admin</h3>
+                    <p class="text-[11px] text-slate-300">Sesuaikan identitas tampilan & kata sandi ranting Anda.</p>
+                </div>
+                <button onclick="closeProfileModal()" class="text-white hover:text-slate-300 text-xl p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-5 text-xs">
+                <!-- PANEL INPUT FOTO (UPLOAD ATAU JEPRET LANGSUNG) -->
+                <div class="flex flex-col items-center space-y-3">
+                    <div class="relative group">
+                        <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 shadow-lg bg-slate-100">
+                            <img id="profile-modal-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=samarang" alt="Foto Admin" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Overlay kamera jepret -->
+                        <button onclick="triggerCaptureCamera()" class="absolute bottom-0 right-0 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-red-700 transition-colors" title="Ambil Foto Kamera">
+                            <i class="fa-solid fa-camera text-xs"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Pilihan Upload File Foto -->
+                    <div class="flex items-center gap-2">
+                        <label class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl cursor-pointer transition-all">
+                            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i>Pilih File Foto
+                            <input type="file" id="profile-file-input" accept="image/*" onchange="handleProfileFileSelect(this)" class="hidden">
+                        </label>
+                        <button id="btn-camera-toggle" onclick="toggleCameraStream()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl transition-all">
+                            <i class="fa-solid fa-camera-retro mr-1.5"></i>Kamera Aktif
+                        </button>
+                    </div>
+
+                    <!-- Panel Kamera Jepret Video Stream -->
+                    <div id="camera-stream-container" class="hidden w-full bg-black rounded-2xl overflow-hidden aspect-video relative">
+                        <video id="camera-video" autoplay playsinline class="w-full h-full object-cover"></video>
+                        <button onclick="captureFromCamera()" class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle text-xs"></i> Jepret Foto
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Username Akses</label>
+                        <input type="text" id="profile-username" disabled class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-xl px-3.5 py-2.5 font-semibold cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Nama Tampilan Admin *</label>
+                        <input type="text" id="profile-display-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold focus:outline-none focus:ring-2 focus:ring-slate-800" placeholder="Contoh: Yudi Sopyan, S.Pd.">
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Ubah Kata Sandi Sesi *</label>
+                        <div class="relative">
+                            <input type="password" id="profile-password" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-3.5 pr-10 py-2.5 font-mono focus:outline-none focus:ring-2 focus:ring-slate-800" placeholder="Masukkan password baru">
+                            <button type="button" onclick="toggleProfilePasswordView()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-655">
+                                <i id="profile-pwd-toggle-icon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                    <button onclick="closeProfileModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition-all">Batal</button>
+                    <button onclick="saveProfileChanges()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CRUD MODAL: FORM TAMBAH / EDIT ANGGOTA -->
+    <div id="member-form-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-slate-100 transform transition-all">
+            <div class="bg-gradient-to-r from-red-700 to-rose-600 p-5 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-base" id="form-modal-title">Tambah Anggota Baru</h3>
+                    <p class="text-[11px] text-red-100">Lengkapi data identitas anggota sesuai parameter resmi.</p>
+                </div>
+                <button onclick="closeMemberFormModal()" class="text-white hover:text-red-200 text-xl p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="member-form" onsubmit="saveMember(event)" class="p-6 space-y-4 text-xs">
+                <!-- Hidden Input untuk Deteksi Edit -->
+                <input type="hidden" id="form-orig-npa">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">NPA (Nomor Pokok Anggota) *</label>
+                        <input type="text" id="form-npa" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-mono focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Contoh: 10190100001">
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Nama Lengkap & Gelar *</label>
+                        <input type="text" id="form-nama" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Contoh: Ahmad Fauzi, S.Pd.">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Ranting Cabang *</label>
+                        <select id="form-ranting" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-medium focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <!-- Opsi akan disesuaikan otomatis dengan hak akses saat modal dibuka -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Tempat, Tanggal Lahir</label>
+                        <input type="text" id="form-ttl" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Contoh: Garut, 12 Maret 1985">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Unit Kerja / Sekolah *</label>
+                        <input type="text" id="form-unit" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Contoh: SDN 1 Samarang">
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Pendidikan Terakhir</label>
+                        <input type="text" id="form-pendidikan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Contoh: S1 PGSD">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Status Kepegawaian *</label>
+                        <select id="form-status" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <option value="PNS">PNS</option>
+                            <option value="PPPK">PPPK</option>
+                            <option value="PPPK Paruh Waktu">PPPK PW</option>
+                            <option value="Honorer">Honorer</option>
+                            <option value="GTY">GTY</option>
+                            <option value="GTT">GTT</option>
+                            <option value="Pensiunan">Pensiunan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Jenis Kelamin *</label>
+                        <select id="form-gender" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <option value="L">Laki-laki (L)</option>
+                            <option value="P">Perempuan (P)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-500 font-bold mb-1">Sertifikasi Guru *</label>
+                        <select id="form-sertifikasi" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-500">
+                            <option value="Sudah">Sudah Lulus</option>
+                            <option value="Belum">Belum Lulus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ELEMEN FORM-AKTIF KEMBALI DISEDIAKAN DISINI UNTUK MEMPERBAIKI CRASH -->
+                <div>
+                    <label class="block text-slate-500 font-bold mb-1">Status Keaktifan *</label>
+                    <select id="form-aktif" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="Aktif">Aktif</option>
+                        <option value="Tidak Aktif">Tidak Aktif</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 border-t border-slate-150 flex justify-end gap-2.5">
+                    <button type="button" onclick="closeMemberFormModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition-all">Batal</button>
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md shadow-red-100">Simpan Anggota</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL: HAPUS ANGGOTA -->
+    <div id="delete-confirm-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden border border-slate-100 p-6 space-y-4 transform transition-all text-center">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-655 flex items-center justify-center text-lg mx-auto shadow-inner">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <div>
+                <h3 class="font-extrabold text-slate-900 text-base">Hapus Data Anggota?</h3>
+                <p class="text-xs text-slate-500 mt-1">Apakah Anda yakin ingin menghapus <b id="delete-member-name" class="text-slate-800">Nama Anggota</b> dari database? Tindakan ini bersifat permanen pada sesi aktif ini.</p>
+            </div>
+            <input type="hidden" id="delete-member-npa">
+            <div class="flex gap-2.5 justify-center pt-2">
+                <button onclick="closeDeleteConfirmModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition-all text-xs">Batal</button>
+                <button onclick="executeDeleteMember()" class="w-1/2 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition-all text-xs shadow-md shadow-red-100">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS TOAST POPUP -->
+    <div id="toast-success" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-800 transform translate-y-10 opacity-0 transition-all duration-300">
+        <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <span class="text-xs font-bold" id="toast-message">Operasi berhasil diselesaikan!</span>
+    </div>
+
+    <!-- MODAL DETAIL UNTUK MOBILE & DESKTOP -->
+    <div id="mobile-detail-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-100 transform transition-all">
+            <div class="bg-gradient-to-r from-red-700 to-rose-600 p-4 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-sm" id="modal-nama">Nama Lengkap</h3>
+                    <p class="text-[10px] text-red-100" id="modal-npa">NPA: -</p>
+                </div>
+                <button onclick="closeDetailModal()" class="text-white hover:text-red-200 text-lg p-1">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4 text-xs">
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Ranting</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-ranting">-</span>
+                </div>
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Tempat, Tgl Lahir</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-ttl">-</span>
+                </div>
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Unit Kerja</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-unit">-</span>
+                </div>
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Pendidikan Terakhir</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-pendidikan">-</span>
+                </div>
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Status Pegawai</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-status">-</span>
+                </div>
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Jenis Kelamin</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-gender">-</span>
+                </div>
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Sertifikasi</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-sertifikasi">-</span>
+                </div>
+                <div class="grid grid-cols-2 py-1.5 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Status Keaktifan</span>
+                    <span class="text-slate-800 font-bold text-right" id="modal-aktif">-</span>
+                </div>
+                <!-- AKSI MOBILE -->
+                <div class="flex gap-2.5 pt-3">
+                    <button id="btn-mobile-edit" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Edit Data</span>
+                    </button>
+                    <button id="btn-mobile-delete" class="w-1/2 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Hapus</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 py-4 text-center border-t border-slate-900 text-[10px]">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 PGRI Cabang Samarang. Dibuat dengan cinta untuk Bapak/Ibu Guru Indonesia.</p>
+            <p class="mt-0.5 text-slate-600">Aplikasi Web Database Anggota Dinamis v1.5 • Agan • Powered by gitHub.io - Gemini AI</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 1. STATE MANAJEMEN DASBOR
+        let currentUser = null;
+        let chartKepegawaianInstance = null;
+        let chartGenderInstance = null;
+        let activeFilters = {
+            gender: null,
+            status: null,
+            sertifikasi: null
+        };
+        let adminSelectedRanting = "Semua Ranting"; // Khusus jika Super Admin login
+        let cameraStream = null; // Stream video aktif untuk jepret langsung
+        let isInitialLoading = true; // State penanda load latar belakang
+
+        // ==========================================
+        // 📢 GLOBAL TOAST MESSAGE SYSTEM
+        // ==========================================
+        function showToast(message) {
+            const toast = document.getElementById("toast-success");
+            const toastMsg = document.getElementById("toast-message");
+            if (!toast || !toastMsg) return;
+            
+            toastMsg.textContent = message;
+
+            toast.classList.remove("hidden");
+            setTimeout(() => {
+                toast.classList.remove("translate-y-10", "opacity-0");
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add("translate-y-10", "opacity-0");
+                setTimeout(() => {
+                    toast.classList.add("hidden");
+                }, 300);
+            }, 3000);
+        }
+
+        // 2. DATA USER DAN KREDENSIAL (9 Akun Ranting + 1 Super Admin Cabang)
+        const USER_ACCOUNTS = {
+            "admincabang": { password: "pgrisamarang", name: "Admin Cabang Samarang", ranting: "Semua Ranting" },
+            "rantingsamarang": { password: "pgrisamarang", name: "Yudi Sopyan, S.Pd.", ranting: "Ranting Samarang" },
+            "rantingparakan": { password: "pgrisamarang", name: "Banyu Nusantara, S.Pd.", ranting: "Ranting Parakan" },
+            "rantingsukarasa": { password: "pgrisamarang", name: "Muhammad Fajar Sidik, S.Pd.", ranting: "Ranting Sukarasa" },
+            "rantingcintarakyat": { password: "pgrisamarang", name: "Ahmad Ropi, S.Pd.I", ranting: "Ranting Cintarakyat" },
+            "rantingsmpn1": { password: "pgrisamarang", name: "Admin Ranting SMPN 1 Samarang", ranting: "Ranting SMPN 1 Samarang" },
+            "rantingsmpn2": { password: "pgrisamarang", name: "Admin Ranting SMPN 2 Samarang", ranting: "Ranting SMPN 2 Samarang" },
+            "rantingmuslimin": { password: "pgrisamarang", name: "Admin Ranting SMP Muslimin", ranting: "Ranting SMP Muslimin" },
+            "rantingtk": { password: "pgrisamarang", name: "Admin Ranting TK", ranting: "Ranting TK" },
+            "rantingsma": { password: "pgrisamarang", name: "Admin Ranting SMA", ranting: "Ranting SMA" }
+        };
+
+        // Daftar 9 Ranting Kecamatan Samarang
+        const LIST_ALL_RANTINGS = [
+            "Ranting Samarang",
+            "Ranting Parakan",
+            "Ranting Sukarasa",
+            "Ranting Cintarakyat",
+            "Ranting SMPN 1 Samarang",
+            "Ranting SMPN 2 Samarang",
+            "Ranting SMP Muslimin",
+            "Ranting TK",
+            "Ranting SMA"
+        ];
+
+        // 🚨 TARUH LINK CSV GOOGLE SHEETS ANDA DI SINI 🚨
+        const SPREADSHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI1aIw_udN7HeKLvc5RkTrcdZKJkunFBBi6lckqPPzPsV8fqoUhRpCW22V-bZVbZEtHITFaaVBKteh/pub?output=csv";
+
+        // 🚨 MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI 🚨
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3fkNAJc2kUTvqTxR46QFaXvyZRQBdXexqpqDS976Pmf6DSypn1Y22GS-k2G7PXKsKpQ/exec";
+
+        // MASTER DATA ANGOTA
+        let MASTER_DATA_ANGGOTA = [];
+
+        // 📝 FUNGSI UNTUK MERAPIKAN PENULISAN NAMA & GELAR SESUAI DENGAN ATURAN EYD
+        function formatNameWithDegrees(fullName) {
+            if (!fullName) return "";
+            let parts = fullName.split(',');
+            let mainName = parts[0].trim();
+            mainName = formatToEYD(mainName);
+            
+            if (parts.length > 1) {
+                let degrees = parts.slice(1).map(deg => {
+                    let d = deg.trim().replace(/\./g, '');
+                    let dLower = d.toLowerCase();
+                    if (dLower === 'spd') return 'S.Pd.';
+                    if (dLower === 'mpd') return 'M.Pd.';
+                    if (dLower === 'skom') return 'S.Kom.';
+                    if (dLower === 'spd_sd' || dLower === 'spdsd') return 'S.Pd.SD.';
+                    if (dLower === 'mpdi') return 'M.Pd.I.';
+                    if (dLower === 'spdi') return 'S.Pd.I.';
+                    if (dLower === 'se') return 'S.E.';
+                    if (dLower === 'sh') return 'S.H.';
+                    if (dLower === 'st') return 'S.T.';
+                    if (dLower === 'mt') return 'M.T.';
+                    if (dLower === 'spdaud' || dLower === 'spd_aud') return 'S.Pd.AUD.';
+                    if (dLower === 'mm') return 'M.M.';
+                    if (dLower === 'sip') return 'S.IP.';
+                    if (dLower === 'ss') return 'S.S.';
+                    if (dLower === 'saq' || dLower === 'sag') return 'S.Ag.';
+                    if (d.length >= 2) {
+                        return d.charAt(0).toUpperCase() + '.' + d.slice(1, 2).toUpperCase() + d.slice(2) + '.';
+                    }
+                    return d.toUpperCase() + '.';
+                });
+                return mainName + ", " + degrees.join(", ");
+            }
+            return mainName;
+        }
+
+        // FORMAT KE EYD
+        function formatToEYD(text) {
+            if (!text) return "";
+            text = String(text).trim().replace(/\s+/g, ' ');
+            const exceptions = ["dan", "atau", "di", "ke", "dari", "pada", "dalam", "dengan", "sebagai", "se", "untuk", "yg", "yang"];
+            
+            return text.split(' ').map((word, index) => {
+                if (word.toUpperCase() === "NPA" || word.toUpperCase() === "PNS" || word.toUpperCase() === "PPPK" || word.toUpperCase() === "PW" || word.toUpperCase() === "TK" || word.toUpperCase() === "SMA" || word.toUpperCase() === "SMP" || word.toUpperCase() === "SMPN" || word.toUpperCase() === "SDN") {
+                    return word.toUpperCase();
+                }
+                const lowerWord = word.toLowerCase();
+                if (exceptions.includes(lowerWord) && index > 0) {
+                    return lowerWord;
+                }
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }).join(' ');
+        }
+
+        // 🚨 SINKRONISASI CAKUPAN DATA SIFAT ADMIN / SUPER ADMIN (getScopedData) 🚨
+        function getScopedData() {
+            if (!currentUser) return [];
+            if (currentUser.username === "admincabang") {
+                if (adminSelectedRanting === "Semua Ranting") {
+                    return MASTER_DATA_ANGGOTA;
+                } else {
+                    return MASTER_DATA_ANGGOTA.filter(item => item.ranting === adminSelectedRanting);
+                }
+            } else {
+                return MASTER_DATA_ANGGOTA.filter(item => item.ranting === currentUser.ranting);
+            }
+        }
+
+        // 🚨 LOGIKA INTI PENYELAMAT SINKRONISASI INSTAN (0-SECOND LOAD) 🚨
+        function initLocalDataImmediate() {
+            const cached = localStorage.getItem("pgri_sheet_cache");
+            let baseData = [];
+            if (cached) {
+                try {
+                    baseData = JSON.parse(cached);
+                } catch (e) {
+                    baseData = getFallbackLocalData();
+                }
+            } else {
+                baseData = getFallbackLocalData();
+            }
+            
+            // Gabungkan langsung dengan transaksi lokal di memori HP/Laptop
+            MASTER_DATA_ANGGOTA = applyLocalDatabaseModifications(baseData);
+            isInitialLoading = false; // Matikan layar loading dari awal, bypass hang!
+        }
+
+        function renderTableLoadingState() {
+            const tbody = document.getElementById("member-table-body");
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="py-16 text-center text-slate-450">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <i class="fa-solid fa-spinner animate-spin text-3xl text-red-655"></i>
+                                <span class="text-xs font-bold tracking-wide text-slate-500 animate-pulse">Menghubungkan & Memuat Real-time Database Google Sheets...</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // 3. FUNGSI UNTUK MENARIK DATA REAL-TIME DARI GOOGLE SHEETS (DENGAN SINKRONISASI LATAR BELAKANG)
+        async function loadDataFromSpreadsheet() {
+            updateCloudStatus("loading");
+            
+            // SINKRONISASI PROFIL DI LATAR BELAKANG (NON-BLOCKING)
+            syncAllProfilesFromCloud().then(() => {
+                if (currentUser) {
+                    applyCustomProfile(currentUser.username);
+                    renderDashboardData();
+                }
+            });
+
+            if (!SPREADSHEET_CSV_URL || SPREADSHEET_CSV_URL === "TARUH_URL_CSV_GOOGLE_SHEETS_ANDA_DI_SINI") {
+                console.log("Menggunakan data simulasi lokal.");
+                updateCloudStatus("offline");
+                return;
+            }
+
+            try {
+                // Berikan batas waktu fetch selama 8 detik agar tidak tertahan selamanya pada internet lambat
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                const response = await fetch(SPREADSHEET_CSV_URL, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                const dataText = await response.text();
+                
+                const cleanText = dataText.replace(/\r/g, '');
+                const lines = cleanText.split("\n").map(line => {
+                    const result = [];
+                    let current = '';
+                    let inQuotes = false;
+                    for (let char of line) {
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            result.push(current.trim());
+                            current = '';
+                        } else {
+                            current += char;
+                        }
+                    }
+                    result.push(current.trim());
+                    return result;
+                });
+
+                const headers = lines[0].map(h => h.replace(/"/g, '').toLowerCase().replace(/ /g, "_").trim());
+                
+                const tempArray = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const cells = lines[i];
+                    if (cells.length < headers.length || !cells[0]) continue;
+                    
+                    let row = {};
+                    cells.forEach((cell, idx) => {
+                        let cleanCell = cell.replace(/"/g, '').trim();
+                        row[headers[idx]] = cleanCell;
+                    });
+                    
+                    const getVal = (keys) => {
+                        for (let k of keys) {
+                            const cleanK = k.toLowerCase().replace(/ /g, "_");
+                            if (row[cleanK] !== undefined) return row[cleanK];
+                        }
+                        return "";
+                    };
+                    
+                    const npaVal = getVal(["npa", "no_anggota", "no._anggota", "nomor_anggota"]);
+                    const namaVal = getVal(["nama_lengkap", "nama"]);
+                    const rantingVal = getVal(["ranting"]);
+                    const ttlVal = getVal(["tempat_tanggal_lahir", "ttl", "tempat_tgl_lahir"]);
+                    const unitVal = getVal(["unit_kerja", "sekolah", "unit", "instansi"]);
+                    const pendidikanVal = getVal(["pendidikan_terakhir", "pendidikan", "ijazah"]);
+                    const statusVal = getVal(["status_pegawai", "status_kepegawaian", "status"]);
+                    const genderVal = getVal(["jenis_kelamin", "l/p", "lp", "jk", "gender", "sex"]);
+                    const sertifikasiVal = getVal(["sertifikasi", "serdik", "sertifikasi_guru"]);
+                    const aktifVal = getVal(["status_keaktifan", "keaktifan", "aktif", "status_aktif"]);
+
+                    let normalizedGender = "P";
+                    const rawGender = genderVal.trim().toUpperCase();
+                    if (rawGender.startsWith("L") || rawGender === "LAKI-LAKI" || rawGender === "LAKI LAKI" || rawGender === "MALE") {
+                        normalizedGender = "L";
+                    }
+
+                    let normalizedSertifikasi = "Belum";
+                    const rawSertif = sertifikasiVal.trim().toUpperCase();
+                    if (rawSertif.startsWith("SUD") || rawSertif === "YA" || rawSertif === "SUDAH") {
+                        normalizedSertifikasi = "Sudah";
+                    }
+
+                    let normalizedAktif = "Aktif";
+                    const rawAktif = aktifVal.trim().toUpperCase();
+                    if (rawAktif.startsWith("TID") || rawAktif === "NON" || rawAktif === "TIDAK AKTIF") {
+                        normalizedAktif = "Tidak Hack";
+                    }
+
+                    if (namaVal) {
+                        tempArray.push({
+                            npa: npaVal.replace(/\s+/g, ''), 
+                            nama: formatNameWithDegrees(namaVal), 
+                            ranting: formatToEYD(rantingVal), 
+                            ttl: formatToEYD(ttlVal), 
+                            unit: formatToEYD(unitVal), 
+                            pendidikan: pendidikanVal.trim(), 
+                            status: statusVal,
+                            gender: normalizedGender,
+                            sertifikasi: normalizedSertifikasi,
+                            aktif: normalizedAktif
+                        });
+                    }
+                }
+
+                if (tempArray.length > 0) {
+                    // Amankan data terbaru Google Sheets ke dalam Cache Lokal Browser
+                    localStorage.setItem("pgri_sheet_cache", JSON.stringify(tempArray));
+                    
+                    MASTER_DATA_ANGGOTA = applyLocalDatabaseModifications(tempArray);
+                    console.log("Database Google Sheets Berhasil Dimuat & Disinkronkan!", MASTER_DATA_ANGGOTA);
+                    updateCloudStatus("synced");
+                    
+                    if (currentUser) {
+                        applyCustomProfile(currentUser.username);
+                        renderDashboardData();
+                    }
+                }
+            } catch (error) {
+                console.warn("Gagal menarik data baru dari Google Sheets, menggunakan data luring/cache.", error);
+                updateCloudStatus("offline");
+            }
+        }
+
+        function getFallbackLocalData() {
+            return [
+                { nama: "Yoni Hermanto, M.Pd.", npa: "10190100001", ranting: "Ranting Samarang", ttl: "Garut, 12 Maret 1985", unit: "SDN 1 Samarang", pendidikan: "S2 Tek. Pendidikan", status: "PNS", gender: "L", sertifikasi: "Sudah", aktif: "Aktif" },
+                { nama: "Siti Masitoh, S.Pd.", npa: "10190100002", ranting: "Ranting Samarang", ttl: "Garut, 25 April 1990", unit: "SDN 1 Samarang", pendidikan: "S1 PGSD", status: "PPPK", gender: "P", sertifikasi: "Sudah", aktif: "Aktif" },
+                { nama: "Andri Wijaya, S.Pd.", npa: "10190100003", ranting: "Ranting Samarang", ttl: "Bandung, 05 Juni 1995", unit: "SDN 2 Samarang", pendidikan: "S1 Penjas", status: "Honorer", gender: "L", sertifikasi: "Belum", aktif: "Aktif" },
+                { nama: "Lilis Herlina, S.Pd.", npa: "10190100004", ranting: "Ranting Samarang", ttl: "Garut, 18 September 1980", unit: "SDN 2 Samarang", pendidikan: "S1 PGSD", status: "GTY", gender: "P", sertifikasi: "Sudah", aktif: "Aktif" },
+                { nama: "Dian Mulyana, S.Pd.", npa: "10190100005", ranting: "Ranting Samarang", ttl: "Garut, 22 Agustus 1996", unit: "SMKS Pasundan Samarang", pendidikan: "S1 Pend. Ekonomi", status: "GTT", gender: "L", sertifikasi: "Belum", aktif: "Aktif" },
+                { nama: "Soni Hermawan, S.Kom", npa: "10190700003", ranting: "Ranting Parakan", ttl: "Bandung, 14 Des 1991", unit: "SDN 1 Tanjungsari", pendidikan: "S1 Komputer", status: "GTY", gender: "L", sertifikasi: "Belum", aktif: "Aktif" },
+                { nama: "Yuni Kartika, S.Pd.", npa: "10190700004", ranting: "Ranting Sukarasa", ttl: "Garut, 18 Juni 1995", unit: "SMPN 3 Samarang", pendidikan: "S1 Pend. Bahasa Inggris", status: "GTT", gender: "P", sertifikasi: "Belum", aktif: "Aktif" }
+            ].map(m => {
+                return {
+                    ...m,
+                    nama: formatNameWithDegrees(m.nama),
+                    ranting: formatToEYD(m.ranting),
+                    ttl: formatToEYD(m.ttl),
+                    unit: formatToEYD(m.unit)
+                };
+            });
+        }
+
+        // AUTO-RESTORE LOGIN: Berfungsi mem-bypass login jika ada data sesi aktif di localStorage
+        window.onload = function() {
+            // 🚨 SINKRONISASI INSTAN: Muat data cache lokal tercepat sejak detik ke-0 🚨
+            initLocalDataImmediate();
+            
+            // Jalankan penarikan data baru dari Google Sheets di latar belakang secara senyap
+            loadDataFromSpreadsheet();
+            
+            // Mengambil sesi permanen dari localStorage
+            const savedSession = localStorage.getItem("pgri_session");
+            if (savedSession) {
+                try {
+                    currentUser = JSON.parse(savedSession);
+                    applyCustomProfile(currentUser.username);
+                    showDashboard(currentUser);
+                    console.log("Sesi login berhasil dipulihkan secara otomatis!");
+                } catch (e) {
+                    localStorage.removeItem("pgri_session");
+                }
+            }
+        };
+
+        // MEMBACA DAN MENERAPKAN KUSTOMISASI PROFIL ADMIN SECARA PERMANEN
+        function applyCustomProfile(username) {
+            const customData = localStorage.getItem("pgri_profile_custom_" + username);
+            if (customData) {
+                try {
+                    const profile = JSON.parse(customData);
+                    
+                    // Update sesi aktif memori
+                    if (USER_ACCOUNTS[username]) {
+                        USER_ACCOUNTS[username].name = profile.name;
+                        USER_ACCOUNTS[username].password = profile.password;
+                    }
+                    if (currentUser && currentUser.username === username) {
+                        currentUser.name = profile.name;
+                    }
+                    
+                    // Update Tampilan DOM Foto & Nama
+                    document.getElementById("user-display-name").textContent = profile.name;
+                    document.getElementById("welcome-name").textContent = profile.name;
+                    
+                    if (profile.avatar) {
+                        document.getElementById("header-avatar").src = profile.avatar;
+                        document.getElementById("banner-avatar").src = profile.avatar;
+                    }
+                } catch (e) {
+                    console.error("Gagal memulihkan kustomisasi profil.", e);
+                }
+            } else {
+                // Reset ke default jika tidak ada kustomisasi
+                document.getElementById("header-avatar").src = "https://api.dicebear.com/7.x/bottts/svg?seed=" + username;
+                document.getElementById("banner-avatar").src = "https://api.dicebear.com/7.x/bottts/svg?seed=" + username;
+            }
+        }
+
+        // MEMUTAKHIRKAN LOGIKA SINKRONISASI AKUN AWAN (SINKRONISASI LINTAS PERANGKAT)
+        async function syncAllProfilesFromCloud() {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "TARUH_URL_WEB_APP_APPS_SCRIPT_DI_SINI") return;
+            try {
+                // Sinyal GET memanggil data baris Profil_Admin dari Sheets
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const cloudProfiles = await response.json();
+                
+                if (cloudProfiles && Array.isArray(cloudProfiles)) {
+                    cloudProfiles.forEach(p => {
+                        const localKey = "pgri_profile_custom_" + p.username;
+                        
+                        // Menimpa data lokal dan master memori dengan profil termutakhir dari Cloud
+                        if (USER_ACCOUNTS[p.username]) {
+                            USER_ACCOUNTS[p.username].name = p.name;
+                            USER_ACCOUNTS[p.username].password = p.password;
+                        }
+                        
+                        const profileObj = {
+                            name: p.name,
+                            password: p.password,
+                            avatar: p.avatar || ""
+                        };
+                        localStorage.setItem(localKey, JSON.stringify(profileObj));
+                    });
+                    console.log("Semua profil admin berhasil ditarik dari Cloud Sheets!", cloudProfiles);
+                }
+            } catch (e) {
+                console.warn("Gagal menyinkronkan profil dari Cloud, menggunakan backup lokal.", e);
+            }
+        }
+
+        // SINKRONISASI PENGIRIMAN DATA UPDATE PROFIL BARU KE SPREADSHEETS (POST METHOD)
+        async function syncProfileUpdateToCloud(username, name, password, avatarBase64) {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "TARUH_URL_WEB_APP_APPS_SCRIPT_DI_SINI") return;
+            try {
+                const payload = {
+                    action: "updateProfile",
+                    username: username,
+                    name: name,
+                    password: password,
+                    avatar: avatarBase64
+                };
+                
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                console.log("Profil berhasil diunggah dan disinkronkan ke Google Sheets Cloud!");
+            } catch (e) {
+                console.error("Gagal mengunggah profil ke Cloud.", e);
+            }
+        }
+
+        // ==========================================
+        // 🚨 END OF SINKRONISASI PROFIL CLOUD 🚨
+        // ==========================================
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const usernameInput = document.getElementById("username").value.trim().toLowerCase();
+            const passwordInput = document.getElementById("password").value;
+            const errorDiv = document.getElementById("login-error");
+            const errorText = document.getElementById("error-text");
+
+            // Ambil kustomisasi profil lokal sebelum memproses pengecekan password
+            applyCustomProfile(usernameInput);
+
+            if (USER_ACCOUNTS[usernameInput]) {
+                const account = USER_ACCOUNTS[usernameInput];
+                if (account.password === passwordInput) {
+                    errorDiv.classList.add("hidden");
+                    
+                    currentUser = {
+                        username: usernameInput,
+                        name: account.name,
+                        ranting: account.ranting
+                    };
+
+                    localStorage.setItem("pgri_session", JSON.stringify(currentUser));
+                    showDashboard(currentUser);
+                } else {
+                    errorText.textContent = "Kata sandi salah! Silakan coba lagi.";
+                    errorDiv.classList.remove("hidden");
+                }
+            } else {
+                errorText.textContent = "Username Ranting tidak terdaftar!";
+                errorDiv.classList.remove("hidden");
+            }
+        }
+
+        function togglePassword() {
+            const pwdInput = document.getElementById("password");
+            const icon = document.getElementById("password-toggle-icon");
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                pwdInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function showDashboard(user) {
+            document.getElementById("login-container").classList.add("hidden");
+            document.getElementById("dashboard-container").classList.remove("hidden");
+
+            document.getElementById("user-display-name").textContent = user.name;
+            document.getElementById("welcome-name").textContent = user.name;
+            document.getElementById("welcome-ranting").textContent = user.ranting;
+            document.getElementById("badge-ranting").textContent = user.ranting;
+
+            // Atur Visibilitas Kontrol Super Admin Cabang
+            const branchFilter = document.getElementById("admin-branch-filter-container");
+            if (user.username === "admincabang") {
+                branchFilter.classList.remove("hidden");
+                adminSelectedRanting = "Semua Ranting";
+                document.getElementById("admin-ranting-selector").value = "Semua Ranting";
+            } else {
+                branchFilter.classList.add("hidden");
+                adminSelectedRanting = user.ranting;
+            }
+
+            // Pastikan avatar terupdate sesuai profil tersimpan
+            applyCustomProfile(user.username);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            activeFilters.gender = null;
+            activeFilters.status = null;
+            activeFilters.sertifikasi = null;
+
+            // 🚨 SINKRONISASI INTEGRITAS: TAMPILKAN LANGSUNG SEJAK AWAL DARI MEMORI LOKAL 🚨
+            isInitialLoading = false;
+            renderDashboardData();
+        }
+
+        function handleLogout() {
+            // Matikan kamera jika modal profil ditutup saat kamera masih streaming
+            stopCameraStream();
+            localStorage.removeItem("pgri_session");
+            currentUser = null;
+            document.getElementById("login-form").reset();
+            document.getElementById("dashboard-container").classList.add("hidden");
+            document.getElementById("login-container").classList.remove("hidden");
+        }
+
+        // Khusus Super Admin: Berubah Ranting yang Disorot
+        function changeAdminRantingFilter() {
+            adminSelectedRanting = document.getElementById("admin-ranting-selector").value;
+            activeFilters.gender = null;
+            activeFilters.status = null;
+            activeFilters.sertifikasi = null;
+            renderDashboardData();
+        }
+
+        // FUNGSI UNTUK MERENDER PANEL RETIREMENT / PENSIUN DINAMIS (KURUN WAKTU 1 TAHUN BERJALAN)
+        function renderRetirementMonitor(dataList) {
+            const panel = document.getElementById("retirement-panel");
+            const listContainer = document.getElementById("retirement-list");
+            const countBadge = document.getElementById("retirement-badge-count");
+            
+            listContainer.innerHTML = "";
+            
+            const currentYear = 2026; 
+            const retiringTeachers = [];
+            
+            const shortToFull = {
+                "jan": "Januari", "feb": "Februari", "mar": "Maret", "apr": "April", 
+                "mei": "Mei", "jun": "Juni", "jul": "Juli", "agu": "Agustus", 
+                "agt": "Agustus", "sep": "September", "okt": "Oktober", "nov": "November", "des": "Desember"
+            };
+
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            
+            dataList.forEach(member => {
+                if (!member.ttl) return;
+                
+                const matchYear = member.ttl.match(/\b(19[5-9]\d)\b/);
+                if (matchYear) {
+                    const birthYear = parseInt(matchYear[1]);
+                    const pensionYear = birthYear + 60;
+                    
+                    if (pensionYear === currentYear || pensionYear === currentYear + 1) {
+                        let birthMonth = "";
+                        const ttlLower = member.ttl.toLowerCase();
+                        
+                        for (let m of monthNames) {
+                            if (ttlLower.includes(m.toLowerCase())) {
+                                birthMonth = m;
+                                break;
+                            }
+                        }
+                        if (!birthMonth) {
+                            for (let short in shortToFull) {
+                                if (ttlLower.includes(short)) {
+                                    birthMonth = shortToFull[short];
+                                    break;
+                                    }
+                            }
+                        }
+                        
+                        if (!birthMonth) birthMonth = "Bulan Lahir"; 
+
+                        retiringTeachers.push({
+                            ...member,
+                            birthYear: birthYear,
+                            pensionYear: pensionYear,
+                            birthMonth: birthMonth,
+                            remainingYears: pensionYear - currentYear
+                        });
+                    }
+                }
+            });
+
+            retiringTeachers.sort((a, b) => {
+                if (a.pensionYear !== b.pensionYear) {
+                    return a.pensionYear - b.pensionYear;
+                }
+                const indexA = monthNames.indexOf(a.birthMonth);
+                const indexB = monthNames.indexOf(b.birthMonth);
+                return indexA - indexB;
+            });
+
+            if (retiringTeachers.length === 0) {
+                panel.classList.add("hidden");
+                return;
+            }
+
+            panel.classList.remove("hidden");
+            countBadge.textContent = `${retiringTeachers.length} Guru Purna Bakti`;
+
+            retiringTeachers.forEach(teacher => {
+                const card = document.createElement("div");
+                card.className = "bg-white p-4 rounded-xl border border-amber-200/60 shadow-sm flex items-center justify-between smooth-transition hover:border-orange-300";
+                
+                const timelineText = teacher.pensionYear === currentYear 
+                    ? `<span class="bg-red-100 text-red-800 text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider animate-pulse">Purnatugas: ${teacher.birthMonth} ${currentYear}</span>`
+                    : `<span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">Purnatugas: ${teacher.birthMonth} ${teacher.pensionYear}</span>`;
+
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <h5 class="font-extrabold text-slate-900 text-xs">${teacher.nama}</h5>
+                        <p class="text-[10px] text-slate-400 font-medium">NPA: ${teacher.npa} • ${teacher.unit}</p>
+                        <p class="text-[10px] text-slate-500 font-semibold"><i class="fa-solid fa-building-columns text-slate-400 mr-1"></i>${teacher.ranting}</p>
+                    </div>
+                    <div class="text-right pl-3 shrink-0">
+                        ${timelineText}
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        function renderDashboardData() {
+            if (!currentUser) return;
+
+            const activeData = getScopedData();
+
+            const total = activeData.length;
+            const totalL = activeData.filter(item => item.gender === "L").length;
+            const totalP = activeData.filter(item => item.gender === "P").length;
+            
+            const totalPNS = activeData.filter(item => item.status === "PNS").length;
+            const totalPPPK = activeData.filter(item => item.status === "PPPK").length;
+            const totalPPPKPW = activeData.filter(item => item.status === "PPPK Paruh Waktu").length;
+            
+            const totalHonorerGroup = activeData.filter(item => ["Honorer", "GTY", "GTT"].includes(item.status)).length;
+            
+            const totalPensiun = activeData.filter(item => item.status === "Pensiunan").length;
+            const totalSertifikasi = activeData.filter(item => item.sertifikasi === "Sudah").length;
+
+            document.getElementById("stat-total").textContent = total;
+            document.getElementById("stat-total-l").textContent = totalL;
+            document.getElementById("stat-total-p").textContent = totalP;
+            
+            document.getElementById("stat-pns").textContent = totalPNS;
+            document.getElementById("stat-pppk").textContent = totalPPPK;
+            document.getElementById("stat-pppk-pw").textContent = totalPPPKPW;
+            document.getElementById("stat-honorer").textContent = totalHonorerGroup;
+            document.getElementById("stat-pensiun").textContent = totalPensiun;
+            document.getElementById("stat-sertifikasi").textContent = totalSertifikasi;
+
+            // Render Monitor Purna Bakti
+            renderRetirementMonitor(activeData);
+
+            // Render grafik dengan group honorer kumulatif
+            renderKepegawaianChart(totalPNS, totalPPPK, totalPPPKPW, totalHonorerGroup, totalPensiun);
+            renderGenderChart(totalL, totalP);
+
+            applyFiltersAndRenderTable();
+        }
+
+        function updateFilterUI() {
+            const cards = ["card-total", "card-pns", "card-pppk", "card-pppk-pw", "card-honorer", "card-pensiun", "card-sertifikasi"];
+            const leds = ["led-total", "led-pns", "led-pppk", "led-pppk-pw", "led-honorer", "led-pensiun", "led-sertifikasi"];
+            
+            cards.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.remove(
+                        "ring-4", 
+                        "ring-red-500/15", 
+                        "border-red-500", 
+                        "bg-gradient-to-br", 
+                        "from-red-50/50", 
+                        "to-rose-50/50", 
+                        "shadow-md",
+                        "scale-[1.01]"
+                    );
+                }
+            });
+
+            leds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add("hidden");
+            });
+
+            const btnL = document.getElementById("btn-gender-l");
+            const btnP = document.getElementById("btn-gender-p");
+            if (btnL) {
+                btnL.className = "smooth-transition text-[9px] font-extrabold bg-sky-50 text-sky-700 border border-sky-100/50 px-1.5 py-1 rounded-lg flex items-center gap-0.5 hover:bg-sky-500 hover:text-white cursor-pointer";
+            }
+            if (btnP) {
+                btnP.className = "smooth-transition text-[9px] font-extrabold bg-pink-50 text-pink-700 border border-pink-100/50 px-1.5 py-1 rounded-lg flex items-center gap-0.5 hover:bg-pink-555 hover:text-white cursor-pointer";
+            }
+
+            let anyFilterActive = false;
+
+            if (activeFilters.status) {
+                anyFilterActive = true;
+                let cardId = "";
+                let ledId = "";
+                if (activeFilters.status === 'PNS') { cardId = "card-pns"; ledId = "led-pns"; }
+                else if (activeFilters.status === 'PPPK') { cardId = "card-pppk"; ledId = "led-pppk"; }
+                else if (activeFilters.status === 'PPPK Paruh Waktu') { cardId = "card-pppk-pw"; ledId = "led-pppk-pw"; }
+                else if (activeFilters.status === 'Honorer/GTY/GTT') { cardId = "card-honorer"; ledId = "led-honorer"; }
+                else if (activeFilters.status === 'Pensiunan') { cardId = "card-pensiun"; ledId = "led-pensiun"; }
+
+                if (cardId) {
+                    document.getElementById(cardId).classList.add("ring-4", "ring-red-500/15", "border-red-500", "scale-[1.01]");
+                    document.getElementById(ledId).classList.remove("hidden");
+                }
+            }
+
+            if (activeFilters.sertifikasi) {
+                anyFilterActive = true;
+                document.getElementById("card-sertifikasi").classList.add("ring-4", "ring-red-500/15", "border-red-500", "scale-[1.01]");
+                document.getElementById("led-sertifikasi").classList.remove("hidden");
+            }
+
+            if (activeFilters.gender) {
+                anyFilterActive = true;
+                document.getElementById("card-total").classList.add("ring-4", "ring-red-500/15", "border-red-500", "scale-[1.01]");
+                document.getElementById("led-total").classList.remove("hidden");
+                
+                if (activeFilters.gender === 'L' && btnL) {
+                    btnL.className = "smooth-transition text-[9px] font-extrabold bg-sky-500 text-white border border-sky-500 px-1.5 py-1 rounded-lg flex items-center gap-0.5 cursor-pointer shadow-sm shadow-sky-100";
+                } else if (activeFilters.gender === 'P' && btnP) {
+                    btnP.className = "smooth-transition text-[9px] font-extrabold bg-pink-50 text-white border border-pink-500 px-1.5 py-1 rounded-lg flex items-center gap-0.5 cursor-pointer shadow-sm shadow-pink-100";
+                }
+            }
+
+            if (!anyFilterActive) {
+                document.getElementById("card-total").classList.add("ring-4", "ring-red-500/15", "border-red-500", "scale-[1.01]");
+                document.getElementById("led-total").classList.remove("hidden");
+            }
+
+            const btnReset = document.getElementById("btn-reset-filter");
+            const filterBadge = document.getElementById("active-filter-badge");
+
+            if (anyFilterActive) {
+                btnReset.classList.remove("hidden");
+                filterBadge.classList.remove("hidden");
+                
+                let labels = [];
+                if (activeFilters.gender) labels.push(activeFilters.gender === 'L' ? 'Laki-laki' : 'Perempuan');
+                if (activeFilters.status) {
+                    let sLabel = activeFilters.status;
+                    if (sLabel === 'Honorer/GTY/GTT') sLabel = 'Honorer/GTT/GTY';
+                    labels.push(sLabel);
+                }
+                if (activeFilters.sertifikasi) labels.push('Sertifikasi');
+                
+                filterBadge.textContent = labels.join(" + ");
+            } else {
+                btnReset.classList.add("hidden");
+                filterBadge.classList.add("hidden");
+            }
+        }
+
+        function setFilter(filterCode) {
+            if (filterCode === 'all') {
+                activeFilters.gender = null;
+                activeFilters.status = null;
+                activeFilters.sertifikasi = null;
+            } else {
+                const parts = filterCode.split('_');
+                const type = parts[0]; 
+                const value = parts[1];
+
+                if (type === 'gender') {
+                    activeFilters.gender = (activeFilters.gender === value) ? null : value;
+                } else if (type === 'status') {
+                    activeFilters.status = (activeFilters.status === value) ? null : value;
+                } else if (type === 'sertifikasi') {
+                    activeFilters.sertifikasi = (activeFilters.sertifikasi === value) ? null : value;
+                }
+            }
+
+            updateFilterUI();
+            document.getElementById("table-search").value = "";
+            applyFiltersAndRenderTable();
+        }
+
+        function clearFilters() {
+            setFilter('all');
+        }
+
+        function applyFiltersAndRenderTable() {
+            if (!currentUser) return;
+            let finalData = getScopedData();
+
+            if (activeFilters.gender) {
+                finalData = finalData.filter(item => item.gender === activeFilters.gender);
+            }
+            if (activeFilters.status) {
+                if (activeFilters.status === 'Honorer/GTY/GTT') {
+                    finalData = finalData.filter(item => ["Honorer", "GTY", "GTT"].includes(item.status));
+                } else {
+                    finalData = finalData.filter(item => item.status === activeFilters.status);
+                }
+            }
+            if (activeFilters.sertifikasi) {
+                finalData = finalData.filter(item => item.sertifikasi === activeFilters.sertifikasi);
+            }
+
+            renderTableData(finalData);
+        }
+
+        function filterTable() {
+            if (!currentUser) return;
+
+            const query = document.getElementById("table-search").value.trim().toLowerCase();
+            let baseData = getScopedData();
+
+            if (activeFilters.gender) {
+                baseData = baseData.filter(item => item.gender === activeFilters.gender);
+            }
+            if (activeFilters.status) {
+                if (activeFilters.status === 'Honorer/GTY/GTT') {
+                    baseData = baseData.filter(item => ["Honorer", "GTY", "GTT"].includes(item.status));
+                } else {
+                    baseData = baseData.filter(item => item.status === activeFilters.status);
+                }
+            }
+            if (activeFilters.sertifikasi) {
+                baseData = baseData.filter(item => item.sertifikasi === activeFilters.sertifikasi);
+            }
+
+            const searchFiltered = baseData.filter(item => {
+                return item.nama.toLowerCase().includes(query) || 
+                       item.npa.toLowerCase().includes(query) || 
+                       item.unit.toLowerCase().includes(query) || 
+                       item.status.toLowerCase().includes(query);
+            });
+
+            renderTableData(searchFiltered);
+        }
+
+        function renderTableData(data) {
+            const tbody = document.getElementById("member-table-body");
+            const showingCountSpan = document.getElementById("table-showing");
+            const totalCountSpan = document.getElementById("table-total");
+            const emptyState = document.getElementById("table-empty-state");
+            
+            tbody.innerHTML = "";
+            showingCountSpan.textContent = data.length;
+
+            if (currentUser) {
+                totalCountSpan.textContent = getScopedData().length;
+            }
+
+            if (data.length === 0) {
+                emptyState.classList.remove("hidden");
+                return;
+            } else {
+                emptyState.classList.add("hidden");
+            }
+
+            // SINKRONISASI ALFABET: Urutkan data berdasarkan nama secara alfabetis (A-Z) sebelum dirender
+            const sortedData = [...data].sort((a, b) => {
+                return String(a.nama).localeCompare(String(b.nama), 'id', { sensitivity: 'base' });
+            });
+
+            sortedData.forEach((member, index) => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50/80 transition-colors duration-150";
+
+                let statusBadge = "";
+                switch(member.status) {
+                    case "PNS":
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-amber-50 text-amber-700 rounded-full border border-amber-100">PNS</span>`;
+                        break;
+                    case "PPPK":
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-700 rounded-full border border-blue-100">PPPK</span>`;
+                        break;
+                    case "PPPK Paruh Waktu":
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100">PPPK PW</span>`;
+                        break;
+                    case "Honorer":
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 rounded-full border border-slate-200" title="Honorer Sekolah Negeri">Honorer</span>`;
+                        break;
+                    case "GTY":
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-purple-50 text-purple-700 rounded-full border border-purple-200" title="Guru Tetap Yayasan (Swasta)">GTY (Yayasan)</span>`;
+                        break;
+                    case "GTT":
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-fuchsia-50 text-fuchsia-700 rounded-full border border-fuchsia-200" title="Guru Tidak Tetap (Swasta)">GTT (Swasta)</span>`;
+                        break;
+                    case "Pensiunan":
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">Pensiunan</span>`;
+                        break;
+                    default:
+                        statusBadge = `<span class="px-2 py-0.5 text-[10px] font-bold bg-slate-50 text-slate-655">${member.status}</span>`;
+                }
+
+                const genderBadge = member.gender === "L" 
+                    ? `<span class="text-sky-600 font-semibold inline-flex items-center gap-1 text-[11px]"><i class="fa-solid fa-mars"></i> Laki-laki</span>`
+                    : `<span class="text-pink-600 font-semibold inline-flex items-center gap-1 text-[11px]"><i class="fa-solid fa-venus"></i> Perempuan</span>`;
+
+                const serdikIndicator = member.sertifikasi === "Sudah"
+                    ? `<span class="bg-teal-100 text-teal-800 text-[8px] font-extrabold px-1 py-0.5 rounded ml-1.5 inline-flex items-center gap-0.5" title="Sertifikasi Hack"><i class="fa-solid fa-circle-check text-[9px]"></i> SERDIK</span>`
+                    : ``;
+
+                const activeBadge = member.aktif === "Aktif"
+                    ? `<span class="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-bold"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>Aktif</span>`
+                    : `<span class="inline-flex items-center gap-1 text-[11px] text-slate-400 font-bold"><span class="w-2 h-2 rounded-full bg-slate-300"></span>Non-Aktif</span>`;
+
+                const memberEscaped = JSON.stringify(member).replace(/"/g, '&quot;');
+
+                tr.innerHTML = `
+                    <td class="py-2.5 px-4 font-bold text-slate-400 text-center border-r border-slate-100/50">${index + 1}</td>
+                    <td class="py-2.5 px-4 text-slate-600 font-mono text-xs font-bold">${member.npa}</td>
+                    <td class="py-2.5 px-4 font-extrabold text-slate-900 flex items-center">${member.nama}${serdikIndicator}</td>
+                    <td class="py-2.5 px-4 text-slate-655 font-medium text-xs hidden md:table-cell">${member.ttl || '-'}</td>
+                    <td class="py-2.5 px-4 text-slate-655 font-semibold text-xs">${member.unit}</td>
+                    <td class="py-2.5 px-4 text-slate-600 text-xs hidden lg:table-cell font-medium">${member.pendidikan || '-'}</td>
+                    <td class="py-2.5 px-4">${statusBadge}</td>
+                    <td class="py-2.5 px-4 hidden md:table-cell">${genderBadge}</td>
+                    <td class="py-2.5 px-4">${activeBadge}</td>
+                    <td class="py-2.5 px-4 text-center">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <!-- Detail Button -->
+                            <button onclick="openDetailModal('${memberEscaped}')" class="text-slate-500 hover:text-red-655 bg-slate-100 hover:bg-red-50 p-1.5 rounded-lg transition-all" title="Detail Anggota">
+                                <i class="fa-solid fa-circle-info text-xs"></i>
+                            </button>
+                            <!-- Edit Button -->
+                            <button onclick="openEditModal('${member.npa}')" class="text-slate-500 hover:text-red-650 bg-slate-100 hover:bg-red-50 p-1.5 rounded-lg transition-all" title="Edit Data">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            </button>
+                            <!-- Delete Button -->
+                            <button onclick="triggerDeleteMember('${member.npa}', '${member.nama.replace(/'/g, "\\'")}')" class="text-slate-500 hover:text-red-655 bg-slate-100 hover:bg-red-50 p-1.5 rounded-lg transition-all" title="Hapus Data">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // JAVASCRIPT MODAL DETAIL
+        function openDetailModal(memberJsonString) {
+            const member = JSON.parse(memberJsonString.replace(/&quot;/g, '"'));
+            
+            document.getElementById("modal-nama").textContent = formatNameWithDegrees(member.nama);
+            document.getElementById("modal-npa").textContent = "NPA: " + String(member.npa).trim();
+            document.getElementById("modal-ranting").textContent = formatToEYD(member.ranting);
+            document.getElementById("modal-ttl").textContent = formatToEYD(member.ttl) || '-';
+            document.getElementById("modal-unit").textContent = formatToEYD(member.unit);
+            document.getElementById("modal-pendidikan").textContent = String(member.pendidikan).trim() || '-';
+            
+            let statusLabel = member.status;
+            if (member.status === "GTY") statusLabel = "GTY (Guru Tetap Yayasan)";
+            if (member.status === "GTT") statusLabel = "GTT (Guru Tidak Tetap)";
+            document.getElementById("modal-status").textContent = statusLabel;
+            
+            document.getElementById("modal-gender").textContent = member.gender === "L" ? "Laki-laki" : "Perempuan";
+            document.getElementById("modal-sertifikasi").textContent = member.sertifikasi === "Sudah" ? "Sertifikasi Aktif" : "Belum Sertifikasi";
+            document.getElementById("modal-aktif").textContent = member.aktif;
+
+            // Tombol Aksi Mobile
+            document.getElementById("btn-mobile-edit").setAttribute("onclick", `closeDetailModal(); openEditModal('${member.npa}')`);
+            document.getElementById("btn-mobile-delete").setAttribute("onclick", `closeDetailModal(); triggerDeleteMember('${member.npa}', '${member.nama.replace(/'/g, "\\'")}')`);
+
+            const modal = document.getElementById("mobile-detail-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeDetailModal() {
+            const modal = document.getElementById("mobile-detail-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+            document.body.style.overflow = "auto";
+        }
+
+        // ==========================================
+        // 🚨 CONFIGURASI UTAMA MODAL PROFIL ADMIN 🚨
+        // ==========================================
+
+        function openProfileModal() {
+            if (!currentUser) return;
+            const u = currentUser.username;
+            const account = USER_ACCOUNTS[u];
+
+            document.getElementById("profile-username").value = u;
+            document.getElementById("profile-display-name").value = account.name;
+            document.getElementById("profile-password").value = account.password;
+
+            // Load kustomisasi foto profil saat ini ke dalam modal
+            const customData = localStorage.getItem("pgri_profile_custom_" + u);
+            if (customData) {
+                const parsed = JSON.parse(customData);
+                if (parsed.avatar) {
+                    document.getElementById("profile-modal-avatar").src = parsed.avatar;
+                }
+            } else {
+                document.getElementById("profile-modal-avatar").src = "https://api.dicebear.com/7.x/bottts/svg?seed=" + u;
+            }
+
+            const modal = document.getElementById("profile-settings-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeProfileModal() {
+            stopCameraStream();
+            const modal = document.getElementById("profile-settings-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+            document.body.style.overflow = "auto";
+        }
+
+        function toggleProfilePasswordView() {
+            const pwd = document.getElementById("profile-password");
+            const icon = document.getElementById("profile-pwd-toggle-icon");
+            if (pwd.type === "password") {
+                pwd.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                pwd.type = "password";
+                icon.classList.remove("fa-eye-shadow");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        // UNGGAH FOTO PROFIL VIA FILE INPUT
+        function handleProfileFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("profile-modal-avatar").src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // PEMICU KAMERA (MENGHUBUNGKAN triggerCaptureCamera KE LOGIKA UTAMA)
+        function triggerCaptureCamera() {
+            toggleCameraStream();
+        }
+
+        // AKSES KAMERA DAN JEPRET LANGSUNG (PERANGKAT DESKTOP / HP)
+        function toggleCameraStream() {
+            const container = document.getElementById("camera-stream-container");
+            const video = document.getElementById("camera-video");
+
+            if (container.classList.contains("hidden")) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+                    .then(stream => {
+                        cameraStream = stream;
+                        video.srcObject = stream;
+                        container.classList.remove("hidden");
+                        showToast("Kamera berhasil diaktifkan!");
+                    })
+                    .catch(err => {
+                        console.error("Gagal membuka kamera perangkat.", err);
+                        showToast("Error: Gagal mengakses kamera perangkat.");
+                    });
+            } else {
+                stopCameraStream();
+            }
+        }
+
+        function stopCameraStream() {
+            const container = document.getElementById("camera-stream-container");
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            if (container) container.classList.add("hidden");
+        }
+
+        function captureFromCamera() {
+            const video = document.getElementById("camera-video");
+            const avatar = document.getElementById("profile-modal-avatar");
+            
+            if (video.srcObject) {
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext("2d");
+                
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+                avatar.src = dataUrl;
+                
+                stopCameraStream();
+                showToast("Foto berhasil dijepret!");
+            }
+        }
+
+        // SIMPAN DATA PROFIL PERMANEN KE LOCAL STORAGE DAN CLOUD SINKRONISASI
+        function saveProfileChanges() {
+            const u = currentUser.username;
+            const newName = document.getElementById("profile-display-name").value.trim();
+            const newPassword = document.getElementById("profile-password").value.trim();
+            const avatarBase64 = document.getElementById("profile-modal-avatar").src;
+
+            if (!newName || !newPassword) {
+                showToast("Error: Nama & password tidak boleh kosong!");
+                return;
+            }
+
+            const profileObj = {
+                name: newName,
+                password: newPassword,
+                avatar: avatarBase64
+            };
+
+            // 1. Simpan ke brankas localStorage perangkat lokal saat ini
+            localStorage.setItem("pgri_profile_custom_" + u, JSON.stringify(profileObj));
+
+            // 2. Terapkan perubahan instan pada dashboard perangkat saat ini
+            applyCustomProfile(u);
+
+            // 3. SINKRONKAN PERUBAHAN KE CLOUD GOOGLE SPREADSHEETS (DUA ARAH ANTAR-PERANGKAT)
+            syncProfileUpdateToCloud(u, newName, newPassword, avatarBase64);
+            
+            showToast("Sukses: Pengaturan profil disimpan secara permanen!");
+            closeProfileModal();
+        }
+
+        // ==========================================
+        // 🚨 EKSPOR EXCEL FORMAT ASLI (.XLS SHEET WORKBOOK) 🚨
+        // ==========================================
+        
+        function exportDataExcel() {
+            if (!currentUser) return;
+            const rantingAktif = currentUser.username === "admincabang" ? adminSelectedRanting : currentUser.ranting;
+            
+            const query = document.getElementById("table-search").value.trim().toLowerCase();
+            let baseData = getScopedData();
+            
+            // Terapkan Filter Pembatas yang Aktif saat Ekspor
+            if (activeFilters.gender) baseData = baseData.filter(item => item.gender === activeFilters.gender);
+            if (activeFilters.status) {
+                if (activeFilters.status === 'Honorer/GTY/GTT') {
+                    baseData = baseData.filter(item => ["Honorer", "GTY", "GTT"].includes(item.status));
+                } else {
+                    baseData = baseData.filter(item => item.status === activeFilters.status);
+                }
+            }
+            if (activeFilters.sertifikasi) baseData = baseData.filter(item => item.sertifikasi === activeFilters.sertifikasi);
+
+            const currentFilteredData = baseData.filter(item => {
+                return item.nama.toLowerCase().includes(query) || 
+                       item.npa.toLowerCase().includes(query) || 
+                       item.unit.toLowerCase().includes(query) || 
+                       item.status.toLowerCase().includes(query);
+            });
+
+            // Urutkan data secara alfabetis (A-Z) sesuai standar EYD kita
+            const sortedExportData = [...currentFilteredData].sort((a, b) => {
+                return String(a.nama).localeCompare(String(b.nama), 'id', { sensitivity: 'base' });
+            });
+
+            // JUDUL DAN FILE NAME
+            let filename = `Rekap_Anggota_PGRI_${rantingAktif.replace(/ /g, "_")}`;
+            let tabName = rantingAktif.length > 30 ? rantingAktif.substring(0, 30) : rantingAktif;
+
+            let excelTemplate = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <x:ExcelWorkbook>
+                            <x:ExcelWorksheets>
+                                <x:ExcelWorksheet>
+                                    <x:Name>${tabName}</x:Name>
+                                    <x:WorksheetOptions>
+                                        <x:DisplayGridlines/>
+                                    </x:WorksheetOptions>
+                                </x:ExcelWorksheet>
+                            </x:ExcelWorksheets>
+                        </x:ExcelWorkbook>
+                    </xml>
+                    <![endif]-->
+                    <meta charset="UTF-8">
+                    <style>
+                        table { border-collapse: collapse; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 11pt; }
+                        th { background-color: #be123c; color: #ffffff; font-weight: bold; text-align: left; padding: 8px; border: 1px solid #e2e8f0; }
+                        td { padding: 6px 8px; border: 1px solid #e2e8f0; }
+                        .text-center { text-align: center; }
+                        .title-cell { font-size: 16pt; font-weight: bold; text-align: center; color: #0f172a; }
+                        .subtitle-cell { font-size: 10pt; font-style: italic; text-align: center; color: #64748b; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr><td colspan="9" class="title-cell">LAPORAN DATA BASE ANGGOTA PGRI CABANG SAMARANG</td></tr>
+                        <tr><td colspan="9" class="subtitle-cell">Cakupan Wilayah: ${rantingAktif} | Sesi Ekspor: 2026</td></tr>
+                        <tr><td colspan="9"></td></tr>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>NPA</th>
+                                <th>Nama Lengkap</th>
+                                <th>Tempat, Tanggal Lahir</th>
+                                <th>Unit Kerja / Sekolah</th>
+                                <th>Pendidikan Terakhir</th>
+                                <th>Status Pegawai</th>
+                                <th>Jenis Kelamin</th>
+                                <th>Keaktifan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            sortedExportData.forEach((row, index) => {
+                let statusLabel = row.status;
+                if (row.status === "GTY") statusLabel = "GTY (Guru Tetap Yayasan)";
+                if (row.status === "GTT") statusLabel = "GTT (Guru Tidak Tetap)";
+
+                excelTemplate += `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td style="mso-number-format:'@';">${row.npa}</td>
+                        <td>${row.nama}</td>
+                        <td>${row.ttl || '-'}</td>
+                        <td>${row.unit}</td>
+                        <td class="text-center">${row.pendidikan || '-'}</td>
+                        <td>${statusLabel}</td>
+                        <td class="text-center">${row.gender === 'L' ? 'Laki-laki' : 'Perempuan'}</td>
+                        <td class="text-center">${row.aktif}</td>
+                    </tr>
+                `;
+            });
+
+            excelTemplate += `
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([excelTemplate], { type: "application/vnd.ms-excel" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${filename}.xls`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Sukses: File Excel (.xls) berhasil diekspor!");
+        }
+
+        // ==========================================
+        // SINKRONISASI DATABASE LOKAL
+        // ==========================================
+        
+        function getLocalAddedMembers() {
+            return JSON.parse(localStorage.getItem("pgri_local_added") || "[]");
+        }
+        function getLocalUpdatedMembers() {
+            return JSON.parse(localStorage.getItem("pgri_local_updated") || "[]");
+        }
+        function getLocalDeletedNpas() {
+            return JSON.parse(localStorage.getItem("pgri_local_deleted") || "[]");
+        }
+
+        function saveLocalAddedMembers(arr) {
+            localStorage.setItem("pgri_local_added", JSON.stringify(arr));
+        }
+        function saveLocalUpdatedMembers(arr) {
+            localStorage.setItem("pgri_local_updated", JSON.stringify(arr));
+        }
+        function saveLocalDeletedNpas(arr) {
+            localStorage.setItem("pgri_local_deleted", JSON.stringify(arr));
+        }
+
+        function applyLocalDatabaseModifications(apiData) {
+            const added = getLocalAddedMembers();
+            const updated = getLocalUpdatedMembers();
+            const deleted = getLocalDeletedNpas();
+
+            let merged = apiData.filter(m => !deleted.includes(m.npa));
+
+            merged = merged.map(m => {
+                const foundUpdate = updated.find(u => u.npa === m.npa);
+                return foundUpdate ? foundUpdate : m;
+            });
+
+            return [...added, ...merged];
+        }
+
+        // =========================================================================
+        // ☁️ SINKRONISASI DUA ARAH KE GOOGLE SHEETS & DRIVE VIA APPS SCRIPT API
+        // =========================================================================
+        
+        function updateCloudStatus(statusType) {
+            const indicator = document.getElementById("cloud-sync-status");
+            if (!indicator) return;
+
+            if (statusType === "synced") {
+                indicator.className = "text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 border border-emerald-100";
+                indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span> ☁️ Terhubung & Sinkron`;
+            } else if (statusType === "syncing") {
+                indicator.className = "text-[10px] font-semibold bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 border border-blue-100";
+                indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block animate-spin"></span> 🔄 Menyinkronkan...`;
+            } else if (statusType === "offline") {
+                indicator.className = "text-[10px] font-semibold bg-amber-50 text-amber-700 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 border border-amber-100";
+                indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block"></span> ⚠️ Mode Offline`;
+            } else if (statusType === "loading") {
+                indicator.className = "text-[10px] font-semibold bg-slate-100 text-slate-500 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1";
+                indicator.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-400 inline-block animate-bounce"></span> Mengecek Cloud...`;
+            }
+        }
+
+        async function syncTransactionToCloud(action, memberObj) {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "TARUH_URL_WEB_APP_APPS_SCRIPT_DI_SINI") {
+                console.log("Transaksi disimpan lokal.");
+                updateCloudStatus("offline");
+                return;
+            }
+
+            updateCloudStatus("syncing");
+            try {
+                const payload = {
+                    action: action,
+                    npa: memberObj.npa,
+                    nama: memberObj.nama,
+                    ranting: memberObj.ranting,
+                    ttl: memberObj.ttl,
+                    unit: memberObj.unit,
+                    pendidikan: memberObj.pendidikan,
+                    status: memberObj.status,
+                    gender: memberObj.gender,
+                    aktif: memberObj.aktif
+                };
+
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors", 
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                console.log("Perubahan berhasil dikirim ke Google Sheets!", payload);
+                
+                setTimeout(() => {
+                    updateCloudStatus("synced");
+                    showToast("Sukses: Data berhasil disinkronkan ke Google Drive!");
+                }, 1500);
+
+            } catch (error) {
+                console.error("Gagal menyinkronkan data ke Cloud.", error);
+                updateCloudStatus("offline");
+            }
+        }
+
+        // ==========================================
+        // 🛠️ CRUD OPERATIONS LOGIC
+        // ==========================================
+
+        function populateFormRantingOptions(selectedRanting = "") {
+            const selector = document.getElementById("form-ranting");
+            if (!selector) return;
+            selector.innerHTML = "";
+
+            if (currentUser.username === "admincabang") {
+                LIST_ALL_RANTINGS.forEach(ranting => {
+                    const opt = document.createElement("option");
+                    opt.value = ranting;
+                    opt.textContent = ranting;
+                    if (ranting === selectedRanting) opt.selected = true;
+                    selector.appendChild(opt);
+                });
+                selector.disabled = false;
+            } else {
+                const opt = document.createElement("option");
+                opt.value = currentUser.ranting;
+                opt.textContent = currentUser.ranting;
+                opt.selected = true;
+                selector.appendChild(opt);
+                selector.disabled = true;
+            }
+        }
+
+        function saveMember(event) {
+            event.preventDefault();
+
+            const origNpa = document.getElementById("form-orig-npa").value;
+            const newNpa = document.getElementById("form-npa").value.trim().replace(/\s+/g, '');
+            const nama = formatNameWithDegrees(document.getElementById("form-nama").value);
+            const ranting = formatToEYD(document.getElementById("form-ranting").value);
+            const ttl = formatToEYD(document.getElementById("form-ttl").value);
+            const unit = formatToEYD(document.getElementById("form-unit").value);
+            const pendidikan = document.getElementById("form-pendidikan").value.trim();
+            const status = document.getElementById("form-status").value;
+            const gender = document.getElementById("form-gender").value;
+            const sertifikasi = document.getElementById("form-sertifikasi").value;
+            const aktif = document.getElementById("form-aktif") ? document.getElementById("form-aktif").value : "Aktif";
+
+            if (origNpa !== newNpa) {
+                const isDuplicate = MASTER_DATA_ANGGOTA.some(m => m.npa === newNpa);
+                if (isDuplicate) {
+                    showToast("Error: NPA " + newNpa + " sudah terdaftar!");
+                    return;
+                }
+            }
+
+            const memberObj = { npa: newNpa, nama, ranting, ttl, unit, pendidikan, status, gender, sertifikasi, aktif };
+
+            let localAdded = getLocalAddedMembers();
+            let localUpdated = getLocalUpdatedMembers();
+            let actionType = "add";
+
+            if (origNpa) {
+                actionType = "update";
+                const addedIndex = localAdded.findIndex(m => m.npa === origNpa);
+                if (addedIndex !== -1) {
+                    localAdded[addedIndex] = memberObj;
+                } else {
+                    const updatedIndex = localUpdated.findIndex(m => m.npa === origNpa);
+                    if (updatedIndex !== -1) {
+                        localUpdated[updatedIndex] = memberObj;
+                    } else {
+                        localUpdated.push(memberObj);
+                    }
+                }
+                showToast("Sukses: Data " + nama + " berhasil diperbarui!");
+            } else {
+                actionType = "add";
+                localAdded.unshift(memberObj);
+                showToast("Sukses: " + nama + " berhasil ditambahkan!");
+            }
+
+            saveLocalAddedMembers(localAdded);
+            saveLocalUpdatedMembers(localUpdated);
+
+            syncTransactionToCloud(actionType, memberObj);
+
+            refreshMasterDatabaseLocal();
+            closeMemberFormModal();
+            renderDashboardData();
+        }
+
+        function triggerDeleteMember(npa, nama) {
+            document.getElementById("delete-member-name").textContent = nama;
+            document.getElementById("delete-member-npa").value = npa;
+
+            const modal = document.getElementById("delete-confirm-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeDeleteConfirmModal() {
+            const modal = document.getElementById("delete-confirm-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+            document.body.style.overflow = "auto";
+        }
+
+        function executeDeleteMember() {
+            const npa = document.getElementById("delete-member-npa").value;
+            
+            let localAdded = getLocalAddedMembers();
+            let localUpdated = getLocalUpdatedMembers();
+            let localDeleted = getLocalDeletedNpas();
+
+            const memberObjToDelete = MASTER_DATA_ANGGOTA.find(m => m.npa === npa) || { npa: npa };
+
+            const addedIdx = localAdded.splice(localAdded.findIndex(m => m.npa === npa), 1);
+            if (addedIdx.length > 0) {
+                saveLocalAddedMembers(localAdded);
+            } else {
+                if (!localDeleted.includes(npa)) {
+                    localDeleted.push(npa);
+                    saveLocalDeletedNpas(localDeleted);
+                }
+                const updatedIdx = localUpdated.findIndex(m => m.npa === npa);
+                if (updatedIdx !== -1) {
+                    localUpdated.splice(updatedIdx, 1);
+                    saveLocalUpdatedMembers(localUpdated);
+                }
+            }
+
+            showToast("Sukses: Data anggota berhasil dihapus!");
+            syncTransactionToCloud("delete", memberObjToDelete);
+            
+            refreshMasterDatabaseLocal();
+            closeDeleteConfirmModal();
+            renderDashboardData();
+        }
+
+        function refreshMasterDatabaseLocal() {
+            let baseData = getFallbackLocalData();
+
+            if (SPREADSHEET_CSV_URL && SPREADSHEET_CSV_URL !== "TARUH_URL_CSV_GOOGLE_SHEETS_ANDA_DI_SINI") {
+                loadDataFromSpreadsheet();
+            } else {
+                MASTER_DATA_ANGGOTA = applyLocalDatabaseModifications(baseData);
+            }
+        }
+
+        function renderKepegawaianChart(pns, pppk, pppk_pw, honorerGroup, pensiun) {
+            const ctx = document.getElementById('chartKepegawaian').getContext('2d');
+            
+            if (chartKepegawaianInstance) {
+                chartKepegawaianInstance.destroy();
+            }
+
+            const gradPns = ctx.createLinearGradient(0, 0, 0, 200);
+            gradPns.addColorStop(0, 'rgba(245, 158, 11, 1)'); 
+            gradPns.addColorStop(1, 'rgba(245, 158, 11, 0.3)');
+
+            const gradPppk = ctx.createLinearGradient(0, 0, 0, 200);
+            gradPppk.addColorStop(0, 'rgba(59, 130, 246, 1)'); 
+            gradPppk.addColorStop(1, 'rgba(59, 130, 246, 0.3)');
+
+            const gradPppkPw = ctx.createLinearGradient(0, 0, 0, 200);
+            gradPppkPw.addColorStop(0, 'rgba(99, 102, 241, 1)'); 
+            gradPppkPw.addColorStop(1, 'rgba(99, 102, 241, 0.3)');
+
+            const gradHonorerGroup = ctx.createLinearGradient(0, 0, 0, 200);
+            gradHonorerGroup.addColorStop(0, 'rgba(100, 116, 139, 1)'); 
+            gradHonorerGroup.addColorStop(1, 'rgba(100, 116, 139, 0.3)');
+
+            const gradPensiun = ctx.createLinearGradient(0, 0, 0, 200);
+            gradPensiun.addColorStop(0, 'rgba(16, 185, 129, 1)'); 
+            gradPensiun.addColorStop(1, 'rgba(16, 185, 129, 0.3)');
+
+            chartKepegawaianInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['PNS', 'PPPK', 'PPPK PW', 'Honorer/GTT/GTY', 'Pensiunan'],
+                    datasets: [{
+                        label: 'Jumlah Anggota',
+                        data: [pns, pppk, pppk_pw, honorerGroup, pensiun],
+                        backgroundColor: [gradPns, gradPppk, gradPppkPw, gradHonorerGroup, gradPensiun],
+                        borderColor: [
+                            'rgb(217, 119, 6)',
+                            'rgb(37, 99, 235)',
+                            'rgb(79, 70, 229)',
+                            'rgb(71, 85, 105)',
+                            'rgb(5, 150, 105)'
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                        barThickness: 24
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { size: 11, weight: 'bold' },
+                            bodyFont: { size: 11 },
+                            padding: 8,
+                            cornerRadius: 6
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                stepSize: 1,
+                                font: { size: 10, weight: 'bold' }
+                            },
+                            grid: {
+                                color: '#f8fafc'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 10, weight: 'bold' }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderGenderChart(laki, perempuan) {
+            const ctx = document.getElementById('chartGender').getContext('2d');
+
+            if (chartGenderInstance) {
+                chartGenderInstance.destroy();
+            }
+
+            chartGenderInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Laki-laki (L)', 'Perempuan (P)'],
+                    datasets: [{
+                        data: [laki, perempuan],
+                        backgroundColor: [
+                            'rgba(14, 165, 233, 0.95)', 
+                            'rgba(236, 72, 153, 0.95)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 8,
+                                padding: 12,
+                                font: {
+                                    size: 10,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            padding: 10,
+                            cornerRadius: 6
+                        }
+                    },
+                    cutout: '72%'
+                }
+            });
+        }
+
+        function openEditModal(npa) {
+            const member = MASTER_DATA_ANGGOTA.find(m => m.npa === npa);
+            if (!member) return;
+
+            document.getElementById("form-modal-title").textContent = "Edit Data Anggota";
+            document.getElementById("form-orig-npa").value = member.npa;
+            
+            document.getElementById("form-npa").value = member.npa;
+            document.getElementById("form-nama").value = member.nama;
+            document.getElementById("form-ttl").value = member.ttl;
+            document.getElementById("form-unit").value = member.unit;
+            document.getElementById("form-pendidikan").value = member.pendidikan;
+            document.getElementById("form-status").value = member.status;
+            document.getElementById("form-gender").value = member.gender;
+            document.getElementById("form-sertifikasi").value = member.sertifikasi;
+            document.getElementById("form-aktif").value = member.aktif;
+
+            populateFormRantingOptions(member.ranting);
+            document.getElementById("form-npa").disabled = false;
+
+            const modal = document.getElementById("member-form-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeMemberFormModal() {
+            const modal = document.getElementById("member-form-modal");
+            if (modal) {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                document.body.style.overflow = "auto";
+            }
+        }
+    </script>
+</body>
+</html>
