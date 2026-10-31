@@ -1116,6 +1116,70 @@
                     unit: formatToEYD(m.unit)
                 };
             });
+			function openAddModal() {
+				document.getElementById('member-form').reset();
+				document.getElementById('form-orig-npa').value = ''; // Kosongkan penanda mode edit
+				document.getElementById('form-modal-title').textContent = 'Tambah Anggota Baru';
+
+				// Kunci opsi dropdown Ranting sesuai sesi user aktif
+				const rantingSelect = document.getElementById('form-ranting');
+				rantingSelect.innerHTML = '';
+    
+				if (currentUser.username === 'admincabang') {
+				LIST_ALL_RANTINGS.forEach(r => {
+				rantingSelect.innerHTML += `<option value="${r}">${r}</option>`;
+				});
+			}		 else {
+				rantingSelect.innerHTML = `<option value="${currentUser.ranting}">${currentUser.ranting}</option>`;
+				}
+
+				document.getElementById('member-form-modal').classList.remove('hidden');
+				}
+
+			function closeMemberFormModal() {
+			document.getElementById('member-form-modal').classList.add('hidden');
+				}
+				function saveMember(event) {
+    event.preventDefault();
+
+    // Ambil dan format data dari input form
+    const newMember = {
+        npa: document.getElementById('form-npa').value.trim(),
+        nama: formatNameWithDegrees(document.getElementById('form-nama').value),
+        ranting: document.getElementById('form-ranting').value,
+        ttl: document.getElementById('form-ttl').value.trim(),
+        unit: formatToEYD(document.getElementById('form-unit').value),
+        pendidikan: document.getElementById('form-pendidikan').value.trim(),
+        status: document.getElementById('form-status').value,
+        gender: document.getElementById('form-gender').value,
+        sertifikasi: document.getElementById('form-sertifikasi').value,
+        aktif: document.getElementById('form-aktif').value
+    };
+
+    const origNpa = document.getElementById('form-orig-npa').value;
+
+    if (origNpa) {
+        // Logika Edit (Update) jika dibutuhkan nantinya
+        const index = MASTER_DATA_ANGGOTA.findIndex(m => m.npa === origNpa);
+        if (index !== -1) MASTER_DATA_ANGGOTA[index] = newMember;
+    } else {
+        // Cek duplikasi NPA untuk anggota baru
+        const exists = MASTER_DATA_ANGGOTA.find(m => m.npa === newMember.npa);
+        if (exists) {
+            alert('Gagal: NPA tersebut sudah terdaftar di sistem!');
+            return;
+        }
+        MASTER_DATA_ANGGOTA.push(newMember);
+    }
+
+    // Amankan pembaruan ke cache lokal
+    localStorage.setItem("pgri_sheet_cache", JSON.stringify(MASTER_DATA_ANGGOTA));
+
+    // Tutup modal, panggil notifikasi pop-up, dan segarkan UI dasbor
+    closeMemberFormModal();
+    showToast(origNpa ? 'Data berhasil diperbarui!' : 'Anggota baru berhasil ditambahkan!');
+    renderDashboardData();
+}
         }
 
         // AUTO-RESTORE LOGIN: Berfungsi mem-bypass login jika ada data sesi aktif di localStorage
